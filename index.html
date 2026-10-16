@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="description" content="SmartBudget Pro — Simple Personal & Church Budgeting Tool with instant Rand allocations, custom rules, and offline capability. Created Mawethu Mpande @SISONKE HUB">
+    <title>SmartBudget Pro — Simple Personal & Church Budget Planner</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16'
+                        }
+                    },
+                    screens: {
+                        'xs': '380px'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Touch optimization for mobile buttons and inputs */
+        input, select, button {
+            font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+            min-height: 44px; /* Optimal touch target height */
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+        
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- App Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <!-- Brand & Tagline -->
+            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-calculator text-lg"></i>
+                </div>
+                <div class="truncate">
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-bold text-base sm:text-lg tracking-tight leading-none bg-gradient-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent truncate">SmartBudget Pro</h1>
+                    </div>
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">Created Mawethu Mpande @SISONKE HUB</p>
+                </div>
+            </div>
+
+            <!-- Workspace Switcher & Dark Mode Toggle -->
+            <div class="flex items-center space-x-1 sm:space-x-3 shrink-0">
+                <div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center space-x-1">
+                    <button onclick="switchWorkspace('personal')" id="btn-workspace-personal" aria-label="Personal Budgeting" class="px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center">
+                        <i class="fa-solid fa-user mr-1 text-xs sm:text-sm"></i><span class="hidden xs:inline">Personal</span>
+                    </button>
+                    <button onclick="switchWorkspace('church')" id="btn-workspace-church" aria-label="Church Budgeting" class="px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center">
+                        <i class="fa-solid fa-church mr-1 text-xs sm:text-sm"></i><span class="hidden xs:inline">Church</span>
+                    </button>
+                </div>
+
+                <button onclick="toggleDarkMode()" aria-label="Toggle theme" class="w-10 h-10 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center">
+                    <i class="fa-solid fa-moon dark:hidden text-base"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-base text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-16 z-30 no-print overflow-x-auto custom-scrollbar">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 min-w-max">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn py-3 px-3 border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 font-bold text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-bolt text-sm"></i><span>Quick Budget</span>
+            </button>
+            <button onclick="switchTab('methods')" id="tab-methods" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-sliders text-sm"></i><span>Budgeting Rules</span>
+            </button>
+            <button onclick="switchTab('categories')" id="tab-categories" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-list-check text-sm"></i><span>Category Allocations</span>
+            </button>
+            <button onclick="switchTab('transactions')" id="tab-transactions" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-receipt text-sm"></i><span>Transactions</span>
+            </button>
+            <button onclick="switchTab('reports')" id="tab-reports" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-file-invoice-dollar text-sm"></i><span>Reports & Export</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-y-auto">
+
+        <!-- 1. QUICK BUDGET DASHBOARD VIEW -->
+        <section id="view-dashboard" class="space-y-6">
+            
+            <!-- SIMPLE QUICK CALCULATOR CARD -->
+            <div class="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-xl border border-brand-500/30">
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="text-center sm:text-left">
+                        <span id="dash-workspace-badge" class="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold bg-brand-500/30 text-emerald-300 uppercase tracking-wider mb-1">Personal Budgeting</span>
+                        <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Instant Budget Calculator</h2>
+                        <p class="text-slate-300 text-xs sm:text-sm mt-0.5">Enter your available amount, select a budget rule, and watch your budget balance instantly in Rand (ZAR).</p>
+                    </div>
+
+                    <!-- Input & Rule Selection -->
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-white/10 dark:bg-slate-900/80 p-3.5 sm:p-5 rounded-xl backdrop-blur-md border border-white/10">
+                        <!-- Amount Input -->
+                        <div class="sm:col-span-5">
+                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">1. Total Amount (ZAR / R)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-300 font-bold text-base">R</span>
+                                <input type="number" id="quick-amount-input" oninput="calculateQuickBudget()" min="0" step="100" placeholder="25000" class="w-full bg-slate-900/90 border border-brand-400/50 rounded-xl pl-9 pr-3 py-2.5 text-base sm:text-lg font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400">
+                            </div>
+                        </div>
+
+                        <!-- Rule Selector -->
+                        <div class="sm:col-span-5">
+                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">2. Choose Budget Rule</label>
+                            <select id="quick-rule-select" onchange="calculateQuickBudget()" class="w-full bg-slate-900/90 border border-brand-400/50 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-brand-400">
+                                <option value="50_30_20">50/30/20 Rule (Needs, Wants, Savings)</option>
+                                <option value="70_20_10">70/20/10 Rule (Living, Savings, Giving)</option>
+                                <option value="60_30_10">60/30/10 Rule (Essential, Wants, Future)</option>
+                                <option value="80_20">80/20 Rule (Living Expenses & Savings)</option>
+                                <option value="zero_based">Zero-Based Budgeting (100% Assigned)</option>
+                                <option value="pay_first">Pay-Yourself-First (Savings First)</option>
+                                <option value="church_std">Church Standard (Operating, Outreach, Building)</option>
+                                <option value="church_evangelism">Church Evangelism Focus (Outreach Heavy)</option>
+                            </select>
+                        </div>
+
+                        <!-- Apply Button -->
+                        <div class="sm:col-span-2 flex items-end">
+                            <button onclick="applyQuickBudgetToActive()" class="w-full bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-lg flex items-center justify-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-check"></i><span>Apply</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instant Breakdown Preview Cards -->
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center">
+                        <i class="fa-solid fa-chart-pie text-brand-600 mr-2"></i>Calculated Allocation Breakdown
+                    </h3>
+                    <span id="quick-rule-badge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">50/30/20 Rule</span>
+                </div>
+
+                <div id="quick-breakdown-cards" class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- KPI Summary Strip -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Income / Budget</p>
+                        <h4 id="kpi-income" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-wallet text-base"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Spent</p>
+                        <h4 id="kpi-spent" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-credit-card text-base"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remaining Balance</p>
+                        <h4 id="kpi-balance" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-scale-balanced text-base"></i></div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-2 text-xs sm:text-sm uppercase tracking-wider">Visual Distribution</h3>
+                    <div class="relative" style="height: 200px;">
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                    <div id="chartLegend" class="mt-4 space-y-1.5 text-xs max-h-36 overflow-y-auto custom-scrollbar"></div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2">
+                    <h3 class="font-bold text-slate-900 dark:text-white mb-2 text-xs sm:text-sm uppercase tracking-wider">Planned Allocation vs Actual Spent</h3>
+                    <div class="relative" style="height: 240px;">
+                        <canvas id="plannedActualBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 2. BUDGETING RULES & METHODS LIBRARY VIEW -->
+        <section id="view-methods" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">Established Budgeting Strategies</h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">Select any financial rule below to instantly apply it to your current active budget workspace.</p>
+
+                <div id="methods-library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CATEGORIES VIEW -->
+        <section id="view-categories" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Active Budget Categories</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Fine-tune individual category percentages, priorities, and Rand targets.</p>
+                    </div>
+                    <button onclick="openCategoryModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm shadow transition flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-plus"></i><span>Add Category</span>
+                    </button>
+                </div>
+
+                <div id="allocation-validation-banner" class="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <span id="validation-msg"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Allocations total exactly 100%. Budget is balanced.</span>
+                    <button onclick="autoBalanceCategories()" class="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 transition font-semibold shrink-0">Auto-Balance</button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0">
+                    <table class="w-full text-left border-collapse min-w-[550px]">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Type</th>
+                                <th class="py-3 px-4">Target %</th>
+                                <th class="py-3 px-4">Allocated (ZAR)</th>
+                                <th class="py-3 px-4">Actual Spent</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TRANSACTIONS VIEW -->
+        <section id="view-transactions" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Record Income & Expenses</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Track actual spending against calculated limits.</p>
+                    </div>
+                    <button onclick="openTransactionModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm shadow transition flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-plus"></i><span>New Transaction</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0">
+                    <table class="w-full text-left border-collapse min-w-[550px]">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="py-3 px-4">Date</th>
+                                <th class="py-3 px-4">Description</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Type</th>
+                                <th class="py-3 px-4 text-right">Amount (ZAR)</th>
+                                <th class="py-3 px-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. REPORTS & EXPORT VIEW -->
+        <section id="view-reports" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Reports & Data Export</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Export financial summaries, CSV data, or print budget reports.</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition">Print Report</button>
+                        <button onclick="exportCSV()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition">Export CSV</button>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Data Privacy Notice</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">All financial calculations and records stay strictly inside your device's browser memory. SmartBudget Pro transmits zero financial records externally.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Footer Watermark -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 no-print mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Created Mawethu Mpande @SISONKE HUB &bull; SmartBudget Pro (ZAR)
+            </p>
+        </div>
+    </footer>
+
+    <!-- TRANSACTION MODAL -->
+    <div id="transaction-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Add Transaction</h3>
+                <button onclick="closeTransactionModal()" aria-label="Close" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="transaction-form" onsubmit="saveTransaction(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Type</label>
+                    <select id="modal-tx-type" onchange="updateModalCategories()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Description</label>
+                    <input type="text" id="modal-tx-desc" required placeholder="e.g. Groceries / Offering" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Amount (ZAR)</label>
+                    <input type="number" id="modal-tx-amount" required min="0.01" step="0.01" placeholder="500.00" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Category</label>
+                    <select id="modal-tx-category" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Date</label>
+                    <input type="date" id="modal-tx-date" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                </div>
+                <div class="flex justify-end space-x-3 pt-3">
+                    <button type="button" onclick="closeTransactionModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs sm:text-sm font-bold">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CATEGORY MODAL -->
+    <div id="category-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="category-modal-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Add Category</h3>
+                <button onclick="closeCategoryModal()" aria-label="Close" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="category-form" onsubmit="saveCategory(event)" class="space-y-3.5">
+                <input type="hidden" id="modal-cat-index" value="-1">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Category Name</label>
+                    <input type="text" id="modal-cat-name" required placeholder="e.g. Housing" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Type</label>
+                    <select id="modal-cat-type" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                        <option value="needs">Needs / Operating</option>
+                        <option value="wants">Wants / Projects</option>
+                        <option value="savings">Savings / Reserves</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Percentage (%)</label>
+                    <input type="number" id="modal-cat-percent" required min="0" max="100" step="0.5" placeholder="15" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                </div>
+                <div class="flex justify-end space-x-3 pt-3">
+                    <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs sm:text-sm font-bold">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Engine -->
+    <script>
+        // Budgeting Rules Presets
+        const BUDGET_RULES = {
+            '50_30_20': {
+                name: '50/30/20 Rule',
+                desc: '50% Needs, 30% Wants, 20% Savings & Debt Repayment.',
+                presets: [
+                    { name: 'Needs (Rent, Groceries, Utilities)', percent: 50, type: 'needs' },
+                    { name: 'Wants (Entertainment, Dining)', percent: 30, type: 'wants' },
+                    { name: 'Savings & Debt Repayment', percent: 20, type: 'savings' }
+                ]
+            },
+            '70_20_10': {
+                name: '70/20/10 Rule',
+                desc: '70% Living Expenses, 20% Savings/Debt, 10% Tithes/Giving.',
+                presets: [
+                    { name: 'Living Expenses', percent: 70, type: 'needs' },
+                    { name: 'Savings & Debt Payoff', percent: 20, type: 'savings' },
+                    { name: 'Tithes, Offerings & Giving', percent: 10, type: 'wants' }
+                ]
+            },
+            '60_30_10': {
+                name: '60/30/10 Rule',
+                desc: '60% Essential Living, 30% Wants/Welfare, 10% Emergency Fund.',
+                presets: [
+                    { name: 'Essential Living Needs', percent: 60, type: 'needs' },
+                    { name: 'Wants & Lifestyle', percent: 30, type: 'wants' },
+                    { name: 'Emergency Fund', percent: 10, type: 'savings' }
+                ]
+            },
+            '80_20': {
+                name: '80/20 Rule (Pareto)',
+                desc: '80% Living Expenses, 20% Direct Savings.',
+                presets: [
+                    { name: 'Living Expenses & Needs', percent: 80, type: 'needs' },
+                    { name: 'Savings & Investments', percent: 20, type: 'savings' }
+                ]
+            },
+            'zero_based': {
+                name: 'Zero-Based Allocation',
+                desc: 'Every Rand is assigned a functional target.',
+                presets: [
+                    { name: 'Housing & Utilities', percent: 35, type: 'needs' },
+                    { name: 'Groceries & Household', percent: 25, type: 'needs' },
+                    { name: 'Transport & Fuel', percent: 15, type: 'needs' },
+                    { name: 'Debt Repayment', percent: 15, type: 'savings' },
+                    { name: 'Savings', percent: 10, type: 'savings' }
+                ]
+            },
+            'pay_first': {
+                name: 'Pay-Yourself-First',
+                desc: '25% Savings & Tithes upfront, 75% Variable Living.',
+                presets: [
+                    { name: 'Savings & Tithe (Priority)', percent: 25, type: 'savings' },
+                    { name: 'General Living Expenses', percent: 75, type: 'needs' }
+                ]
+            },
+            'church_std': {
+                name: 'Church Balanced Operating',
+                desc: '40% Ministries & Tithes, 30% Operations, 20% Outreach, 10% Reserve.',
+                presets: [
+                    { name: 'Ministry Operations & Tithes', percent: 40, type: 'needs' },
+                    { name: 'Church Utilities & Maintenance', percent: 30, type: 'needs' },
+                    { name: 'Evangelism & Community Outreach', percent: 20, type: 'wants' },
+                    { name: 'Emergency Building Reserve', percent: 10, type: 'savings' }
+                ]
+            },
+            'church_evangelism': {
+                name: 'Church Outreach & Evangelism Focus',
+                desc: '50% Evangelism & Missions, 30% Church Operations, 20% Welfare.',
+                presets: [
+                    { name: 'Evangelism & Missions', percent: 50, type: 'wants' },
+                    { name: 'Church Building & Utilities', percent: 30, type: 'needs' },
+                    { name: 'Charity, Soup Kitchens & Welfare', percent: 20, type: 'savings' }
+                ]
+            }
+        };
+
+        let appState = {
+            activeWorkspace: 'personal',
+            activeTab: 'dashboard',
+            darkMode: false,
+            personal: {
+                income: 25000,
+                rule: '50_30_20',
+                categories: [],
+                transactions: []
+            },
+            church: {
+                income: 100000,
+                rule: 'church_std',
+                categories: [],
+                transactions: []
+            }
+        };
+
+        let pieChartInstance = null;
+        let barChartInstance = null;
+
+        window.onload = function() {
+            loadFromStorage();
+            initTheme();
+            syncQuickInputWithState();
+            calculateQuickBudget();
+            renderAll();
+            setDefaultDates();
+        };
+
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('modal-tx-date');
+            if (dateInput) dateInput.value = today;
+        }
+
+        function saveToStorage() {
+            try { localStorage.setItem('smartbudget_pro_simple_state', JSON.stringify(appState)); } catch(e){}
+        }
+
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('smartbudget_pro_simple_state');
+                if (saved) appState = JSON.parse(saved);
+            } catch(e){}
+        }
+
+        function initTheme() {
+            document.documentElement.classList.toggle('dark', appState.darkMode);
+        }
+
+        function toggleDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            initTheme();
+            saveToStorage();
+        }
+
+        function switchWorkspace(ws) {
+            appState.activeWorkspace = ws;
+            document.getElementById('btn-workspace-personal').className = ws === 'personal' 
+                ? 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center'
+                : 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center';
+            
+            document.getElementById('btn-workspace-church').className = ws === 'church' 
+                ? 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center'
+                : 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center';
+
+            document.getElementById('dash-workspace-badge').innerText = ws === 'personal' ? 'Personal Budgeting' : 'Church Budgeting';
+
+            syncQuickInputWithState();
+            calculateQuickBudget();
+            renderAll();
+            saveToStorage();
+        }
+
+        function switchTab(tabId) {
+            appState.activeTab = tabId;
+            ['dashboard', 'methods', 'categories', 'transactions', 'reports'].forEach(t => {
+                const sec = document.getElementById(`view-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (sec) sec.classList.toggle('hidden', t !== tabId);
+                if (btn) {
+                    btn.className = t === tabId 
+                        ? 'tab-btn py-3 px-3 border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 font-bold text-xs sm:text-sm flex items-center space-x-2 transition'
+                        : 'tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition';
+                }
+            });
+            if (tabId === 'dashboard') renderCharts();
+            if (tabId === 'methods') renderMethodsView();
+        }
+
+        function formatZAR(val) {
+            return 'R ' + Number(val || 0).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Quick Calculator Engine
+        function syncQuickInputWithState() {
+            const current = appState[appState.activeWorkspace];
+            document.getElementById('quick-amount-input').value = current.income || 25000;
+            document.getElementById('quick-rule-select').value = current.rule || (appState.activeWorkspace === 'personal' ? '50_30_20' : 'church_std');
+        }
+
+        function calculateQuickBudget() {
+            const amount = Number(document.getElementById('quick-amount-input').value) || 0;
+            const ruleKey = document.getElementById('quick-rule-select').value;
+            const ruleObj = BUDGET_RULES[ruleKey] || BUDGET_RULES['50_30_20'];
+
+            document.getElementById('quick-rule-badge').innerText = ruleObj.name;
+
+            const container = document.getElementById('quick-breakdown-cards');
+            container.innerHTML = '';
+
+            ruleObj.presets.forEach(preset => {
+                const calculatedRand = (amount * preset.percent) / 100;
+                const card = document.createElement('div');
+                card.className = 'bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${preset.type}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-100 text-brand-800 dark:bg-brand-950 dark:text-brand-300">${preset.percent}%</span>
+                        </div>
+                        <p class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white leading-snug">${preset.name}</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <p class="text-base sm:text-lg font-extrabold text-brand-600 dark:text-brand-400">${formatZAR(calculatedRand)}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function applyQuickBudgetToActive() {
+            const amount = Number(document.getElementById('quick-amount-input').value) || 0;
+            const ruleKey = document.getElementById('quick-rule-select').value;
+            const ruleObj = BUDGET_RULES[ruleKey] || BUDGET_RULES['50_30_20'];
+
+            const current = appState[appState.activeWorkspace];
+            current.income = amount;
+            current.rule = ruleKey;
+
+            current.categories = ruleObj.presets.map(p => ({
+                name: p.name,
+                type: p.type,
+                percent: p.percent,
+                spent: 0
+            }));
+
+            saveToStorage();
+            renderAll();
+        }
+
+        function renderAll() {
+            const current = appState[appState.activeWorkspace];
+            
+            if (!current.categories || current.categories.length === 0) {
+                const ruleObj = BUDGET_RULES[current.rule] || BUDGET_RULES['50_30_20'];
+                current.categories = ruleObj.presets.map(p => ({
+                    name: p.name,
+                    type: p.type,
+                    percent: p.percent,
+                    spent: 0
+                }));
+            }
+
+            const income = Number(current.income || 0);
+            let totalSpent = 0;
+            current.categories.forEach(c => totalSpent += Number(c.spent || 0));
+
+            document.getElementById('kpi-income').innerText = formatZAR(income);
+            document.getElementById('kpi-spent').innerText = formatZAR(totalSpent);
+            document.getElementById('kpi-balance').innerText = formatZAR(income - totalSpent);
+
+            renderCategoriesTable();
+            renderTransactionsTable();
+            renderCharts();
+            renderMethodsView();
+        }
+
+        function renderCategoriesTable() {
+            const current = appState[appState.activeWorkspace];
+            const tbody = document.getElementById('categories-table-body');
+            tbody.innerHTML = '';
+
+            const income = Number(current.income || 0);
+            let totalPct = 0;
+
+            current.categories.forEach((cat, idx) => {
+                totalPct += Number(cat.percent || 0);
+                const allocatedZAR = (income * cat.percent) / 100;
+                
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${cat.name}</td>
+                    <td class="py-3 px-4 capitalize text-slate-500 dark:text-slate-400 text-xs">${cat.type}</td>
+                    <td class="py-3 px-4 font-bold">${cat.percent}%</td>
+                    <td class="py-3 px-4 text-brand-600 dark:text-brand-400 font-bold">${formatZAR(allocatedZAR)}</td>
+                    <td class="py-3 px-4 text-slate-700 dark:text-slate-300 font-medium">${formatZAR(cat.spent)}</td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="editCategory(${idx})" aria-label="Edit" class="text-blue-600 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteCategory(${idx})" aria-label="Delete" class="text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const banner = document.getElementById('allocation-validation-banner');
+            const msg = document.getElementById('validation-msg');
+            if (Math.abs(totalPct - 100) < 0.1) {
+                banner.className = 'mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+                msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Allocations total exactly 100%. Budget is balanced.`;
+            } else {
+                banner.className = 'mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-2"></i>Allocations total <strong>${totalPct}%</strong> (Target: 100%).`;
+            }
+        }
+
+        function renderTransactionsTable() {
+            const current = appState[appState.activeWorkspace];
+            const tbody = document.getElementById('transactions-table-body');
+            tbody.innerHTML = '';
+
+            current.transactions.forEach((tx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
+                const isIncome = tx.type === 'income';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-slate-500 dark:text-slate-400 text-xs">${tx.date}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${tx.desc}</td>
+                    <td class="py-3 px-4 text-slate-600 dark:text-slate-400 text-xs">${tx.category}</td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isIncome ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300'}">${tx.type}</span></td>
+                    <td class="py-3 px-4 text-right font-extrabold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${isIncome ? '+' : '-'}${formatZAR(tx.amount)}</td>
+                    <td class="py-3 px-4 text-right"><button onclick="deleteTransaction('${tx.id}')" aria-label="Delete" class="text-red-600 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderCharts() {
+            const current = appState[appState.activeWorkspace];
+            const income = Number(current.income || 0);
+
+            const labels = current.categories.map(c => c.name);
+            const data = current.categories.map(c => (income * c.percent) / 100);
+            const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316'];
+
+            const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, data.length), borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const legendDiv = document.getElementById('chartLegend');
+            legendDiv.innerHTML = '';
+            current.categories.forEach((c, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2 truncate pr-2">
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${colors[idx % colors.length]}"></span>
+                        <span class="truncate">${c.name}</span>
+                    </div>
+                    <span class="font-bold shrink-0 text-slate-900 dark:text-slate-200">${formatZAR((income * c.percent) / 100)}</span>
+                `;
+                legendDiv.appendChild(item);
+            });
+
+            const barCtx = document.getElementById('plannedActualBarChart').getContext('2d');
+            const plannedData = current.categories.map(c => (income * c.percent) / 100);
+            const actualData = current.categories.map(c => c.spent);
+
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Planned (ZAR)', data: plannedData, backgroundColor: '#22c55e', borderRadius: 4 },
+                        { label: 'Actual Spent (ZAR)', data: actualData, backgroundColor: '#3b82f6', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function renderMethodsView() {
+            const grid = document.getElementById('methods-library-grid');
+            grid.innerHTML = '';
+
+            const current = appState[appState.activeWorkspace];
+
+            Object.keys(BUDGET_RULES).forEach(key => {
+                const rule = BUDGET_RULES[key];
+                const card = document.createElement('div');
+                card.className = 'p-4 sm:p-5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between space-y-3';
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-1 text-sm sm:text-base">${rule.name}</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">${rule.desc}</p>
+                    </div>
+                    <button onclick="selectAndApplyRule('${key}')" class="w-full py-2.5 rounded-lg ${current.rule === key ? 'bg-brand-600 text-white font-bold' : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-semibold'} text-xs transition cursor-pointer">
+                        ${current.rule === key ? 'Active Strategy' : 'Select Strategy'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectAndApplyRule(ruleKey) {
+            document.getElementById('quick-rule-select').value = ruleKey;
+            applyQuickBudgetToActive();
+            switchTab('dashboard');
+        }
+
+        // Modals Logic
+        function openTransactionModal() {
+            document.getElementById('transaction-modal').classList.remove('hidden');
+            updateModalCategories();
+        }
+        function closeTransactionModal() {
+            document.getElementById('transaction-modal').classList.add('hidden');
+        }
+        function updateModalCategories() {
+            const current = appState[appState.activeWorkspace];
+            const type = document.getElementById('modal-tx-type').value;
+            const select = document.getElementById('modal-tx-category');
+            select.innerHTML = '';
+
+            if (type === 'income') {
+                select.innerHTML = '<option value="Income">Income Source</option>';
+            } else {
+                current.categories.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.name;
+                    opt.innerText = c.name;
+                    select.appendChild(opt);
+                });
+            }
+        }
+        function saveTransaction(e) {
+            e.preventDefault();
+            const current = appState[appState.activeWorkspace];
+            const type = document.getElementById('modal-tx-type').value;
+            const desc = document.getElementById('modal-tx-desc').value;
+            const amount = Number(document.getElementById('modal-tx-amount').value);
+            const category = document.getElementById('modal-tx-category').value;
+            const date = document.getElementById('modal-tx-date').value;
+
+            current.transactions.push({ id: Date.now().toString(), date, desc, type, amount, category });
+
+            if (type === 'expense') {
+                const catObj = current.categories.find(c => c.name === category);
+                if (catObj) catObj.spent = Number(catObj.spent || 0) + amount;
+            } else if (type === 'income') {
+                current.income = Number(current.income || 0) + amount;
+                syncQuickInputWithState();
+            }
+
+            saveToStorage();
+            closeTransactionModal();
+            renderAll();
+        }
+        function deleteTransaction(id) {
+            const current = appState[appState.activeWorkspace];
+            const idx = current.transactions.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                const tx = current.transactions[idx];
+                if (tx.type === 'expense') {
+                    const catObj = current.categories.find(c => c.name === tx.category);
+                    if (catObj) catObj.spent = Math.max(0, catObj.spent - tx.amount);
+                }
+                current.transactions.splice(idx, 1);
+                saveToStorage();
+                renderAll();
+            }
+        }
+
+        function openCategoryModal(index = -1) {
+            document.getElementById('category-modal').classList.remove('hidden');
+            document.getElementById('modal-cat-index').value = index;
+            if (index !== -1) {
+                const cat = appState[appState.activeWorkspace].categories[index];
+                document.getElementById('modal-cat-name').value = cat.name;
+                document.getElementById('modal-cat-type').value = cat.type;
+                document.getElementById('modal-cat-percent').value = cat.percent;
+            }
+        }
+        function closeCategoryModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+        }
+        function saveCategory(e) {
+            e.preventDefault();
+            const current = appState[appState.activeWorkspace];
+            const index = Number(document.getElementById('modal-cat-index').value);
+            const name = document.getElementById('modal-cat-name').value;
+            const type = document.getElementById('modal-cat-type').value;
+            const percent = Number(document.getElementById('modal-cat-percent').value);
+
+            if (index === -1) {
+                current.categories.push({ name, type, percent, spent: 0 });
+            } else {
+                current.categories[index] = { ...current.categories[index], name, type, percent };
+            }
+
+            saveToStorage();
+            closeCategoryModal();
+            renderAll();
+        }
+        function editCategory(index) { openCategoryModal(index); }
+        function deleteCategory(index) {
+            appState[appState.activeWorkspace].categories.splice(index, 1);
+            saveToStorage();
+            renderAll();
+        }
+        function autoBalanceCategories() {
+            const cats = appState[appState.activeWorkspace].categories;
+            if (!cats.length) return;
+            const share = 100 / cats.length;
+            cats.forEach(c => c.percent = Number(share.toFixed(1)));
+            saveToStorage();
+            renderAll();
+        }
+
+        function exportCSV() {
+            const current = appState[appState.activeWorkspace];
+            let csv = 'Date,Description,Category,Type,Amount (ZAR)\n';
+            current.transactions.forEach(t => { csv += `"${t.date}","${t.desc}","${t.category}","${t.type}",${t.amount}\n`; });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `budget_export_${appState.activeWorkspace}.csv`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
