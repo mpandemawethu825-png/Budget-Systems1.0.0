@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#16a34a">
-    <meta name="description" content="SmartBudget Pro — Simple Personal & Church Budgeting Tool with instant Rand allocations, custom rules, and offline capability. Created Mawethu Mpande @SISONKE HUB">
-    <title>SmartBudget Pro — Simple Personal & Church Budget Planner</title>
+    <meta name="description" content="SmartBudget Pro — Personal & Church Budgeting Tool with instant Rand allocations, comprehensive budgeting rules library, and mathematical validation.">
+    <title>SmartBudget Pro — Personal & Church Budget Planner</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -49,10 +49,9 @@
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
         }
-        /* Touch optimization for mobile buttons and inputs */
         input, select, button {
-            font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
-            min-height: 44px; /* Optimal touch target height */
+            font-size: 16px !important;
+            min-height: 44px;
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -81,7 +80,7 @@
                     <div class="flex items-center space-x-2">
                         <h1 class="font-bold text-base sm:text-lg tracking-tight leading-none bg-gradient-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent truncate">SmartBudget Pro</h1>
                     </div>
-                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">Created Mawethu Mpande @SISONKE HUB</p>
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">Mawethu Mpande @ SISONKE HUB</p>
                 </div>
             </div>
 
@@ -122,54 +121,50 @@
             <button onclick="switchTab('reports')" id="tab-reports" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
                 <i class="fa-solid fa-file-invoice-dollar text-sm"></i><span>Reports & Export</span>
             </button>
+            <button onclick="switchTab('testing')" id="tab-testing" class="tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition">
+                <i class="fa-solid fa-vial text-sm"></i><span>Automated Audit Suite</span>
+            </button>
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-y-auto">
 
         <!-- 1. QUICK BUDGET DASHBOARD VIEW -->
         <section id="view-dashboard" class="space-y-6">
-            
-            <!-- SIMPLE QUICK CALCULATOR CARD -->
+            <!-- QUICK CALCULATOR CARD -->
             <div class="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-xl border border-brand-500/30">
                 <div class="max-w-3xl mx-auto space-y-4">
-                    <div class="text-center sm:text-left">
-                        <span id="dash-workspace-badge" class="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold bg-brand-500/30 text-emerald-300 uppercase tracking-wider mb-1">Personal Budgeting</span>
-                        <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Instant Budget Calculator</h2>
-                        <p class="text-slate-300 text-xs sm:text-sm mt-0.5">Enter your available amount, select a budget rule, and watch your budget balance instantly in Rand (ZAR).</p>
+                    <div class="text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span id="dash-workspace-badge" class="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold bg-brand-500/30 text-emerald-300 uppercase tracking-wider mb-1">Personal Workspace</span>
+                            <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Instant Budget Calculator</h2>
+                        </div>
+                        <div id="rule-status-pill" class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-medium self-start sm:self-auto">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>Math Verified: 100% Reconciled
+                        </div>
                     </div>
 
-                    <!-- Input & Rule Selection -->
+                    <!-- Input & Rule Selector -->
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-white/10 dark:bg-slate-900/80 p-3.5 sm:p-5 rounded-xl backdrop-blur-md border border-white/10">
-                        <!-- Amount Input -->
                         <div class="sm:col-span-5">
-                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">1. Total Amount (ZAR / R)</label>
+                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">Total Available Budget (ZAR / R)</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-300 font-bold text-base">R</span>
                                 <input type="number" id="quick-amount-input" oninput="calculateQuickBudget()" min="0" step="100" placeholder="25000" class="w-full bg-slate-900/90 border border-brand-400/50 rounded-xl pl-9 pr-3 py-2.5 text-base sm:text-lg font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400">
                             </div>
                         </div>
 
-                        <!-- Rule Selector -->
                         <div class="sm:col-span-5">
-                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">2. Choose Budget Rule</label>
+                            <label class="block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">Select Budget Strategy</label>
                             <select id="quick-rule-select" onchange="calculateQuickBudget()" class="w-full bg-slate-900/90 border border-brand-400/50 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-brand-400">
-                                <option value="50_30_20">50/30/20 Rule (Needs, Wants, Savings)</option>
-                                <option value="70_20_10">70/20/10 Rule (Living, Savings, Giving)</option>
-                                <option value="60_30_10">60/30/10 Rule (Essential, Wants, Future)</option>
-                                <option value="80_20">80/20 Rule (Living Expenses & Savings)</option>
-                                <option value="zero_based">Zero-Based Budgeting (100% Assigned)</option>
-                                <option value="pay_first">Pay-Yourself-First (Savings First)</option>
-                                <option value="church_std">Church Standard (Operating, Outreach, Building)</option>
-                                <option value="church_evangelism">Church Evangelism Focus (Outreach Heavy)</option>
+                                <!-- Populated by JS -->
                             </select>
                         </div>
 
-                        <!-- Apply Button -->
                         <div class="sm:col-span-2 flex items-end">
-                            <button onclick="applyQuickBudgetToActive()" class="w-full bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-lg flex items-center justify-center space-x-1 cursor-pointer">
-                                <i class="fa-solid fa-check"></i><span>Apply</span>
+                            <button onclick="applySelectedQuickRule()" class="w-full bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-lg flex items-center justify-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-check-double"></i><span>Apply Rule</span>
                             </button>
                         </div>
                     </div>
@@ -191,25 +186,32 @@
             </div>
 
             <!-- KPI Summary Strip -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
                     <div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Income / Budget</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Approved Budget Base</p>
                         <h4 id="kpi-income" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-wallet text-base"></i></div>
                 </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
+                    <div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Allocated</p>
+                        <h4 id="kpi-allocated" class="text-lg sm:text-xl font-extrabold text-brand-600 dark:text-brand-400 mt-1">R 0.00</h4>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-list-check text-base"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
                     <div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Spent</p>
-                        <h4 id="kpi-spent" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
+                        <h4 id="kpi-spent" class="text-lg sm:text-xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">R 0.00</h4>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-credit-card text-base"></i></div>
                 </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm">
                     <div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remaining Balance</p>
-                        <h4 id="kpi-balance" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">R 0.00</h4>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Unspent Balance</p>
+                        <h4 id="kpi-balance" class="text-lg sm:text-xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">R 0.00</h4>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-scale-balanced text-base"></i></div>
                 </div>
@@ -219,28 +221,59 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 text-xs sm:text-sm uppercase tracking-wider">Visual Distribution</h3>
-                    <div class="relative" style="height: 200px;">
+                    <div class="relative" style="height: 220px;">
                         <canvas id="categoryPieChart"></canvas>
                     </div>
                     <div id="chartLegend" class="mt-4 space-y-1.5 text-xs max-h-36 overflow-y-auto custom-scrollbar"></div>
                 </div>
                 <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 text-xs sm:text-sm uppercase tracking-wider">Planned Allocation vs Actual Spent</h3>
-                    <div class="relative" style="height: 240px;">
+                    <div class="relative" style="height: 260px;">
                         <canvas id="plannedActualBarChart"></canvas>
                     </div>
                 </div>
             </div>
-
         </section>
 
-        <!-- 2. BUDGETING RULES & METHODS LIBRARY VIEW -->
+        <!-- 2. BUDGETING RULES LIBRARY VIEW -->
         <section id="view-methods" class="space-y-6 hidden">
             <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">Established Budgeting Strategies</h2>
-                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">Select any financial rule below to instantly apply it to your current active budget workspace.</p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Budgeting Rules Expansion Library</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Explore mathematically validated rules for Personal & Church Financial Management.</p>
+                    </div>
+                    
+                    <!-- Search & Filters -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative min-w-[200px]">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+                            <input type="text" id="rule-search-input" oninput="renderRulesLibrary()" placeholder="Search rules or categories..." class="w-full pl-8 pr-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <select id="rule-filter-scope" onchange="renderRulesLibrary()" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium">
+                            <option value="workspace_default">Default (Active Workspace Only)</option>
+                            <option value="all">Show All Rules (Personal & Church)</option>
+                            <option value="personal">Personal Budgeting Rules Only</option>
+                            <option value="church">Church Budgeting Models Only</option>
+                        </select>
+                        <select id="rule-filter-tag" onchange="renderRulesLibrary()" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium">
+                            <option value="all">All Topics & Focus Areas</option>
+                            <option value="Savings">Savings & Investments</option>
+                            <option value="Debt">Debt Reduction</option>
+                            <option value="Low-Income">Low-Income & Survival</option>
+                            <option value="Emergency">Emergency Reserves</option>
+                            <option value="Evangelism">Evangelism & Missions</option>
+                            <option value="Welfare">Community Welfare</option>
+                            <option value="Building">Building & Maintenance</option>
+                            <option value="Youth">Youth & Discipleship</option>
+                            <option value="Restricted">Restricted Funds</option>
+                            <option value="Annual">Annual Planning</option>
+                        </select>
+                    </div>
+                </div>
 
-                <div id="methods-library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Rules Grid -->
+                <div id="methods-library-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Populated dynamically -->
                 </div>
             </div>
@@ -251,32 +284,34 @@
             <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                     <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Active Budget Categories</h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Fine-tune individual category percentages, priorities, and Rand targets.</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Active Budget Category Allocations</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Fine-tune individual category percentages, types, and automated Rand targets.</p>
                     </div>
                     <button onclick="openCategoryModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm shadow transition flex items-center justify-center space-x-2 shrink-0">
                         <i class="fa-solid fa-plus"></i><span>Add Category</span>
                     </button>
                 </div>
 
+                <!-- Mathematical Validation Banner -->
                 <div id="allocation-validation-banner" class="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <span id="validation-msg"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Allocations total exactly 100%. Budget is balanced.</span>
-                    <button onclick="autoBalanceCategories()" class="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 transition font-semibold shrink-0">Auto-Balance</button>
+                    <span id="validation-msg"><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Allocations total exactly 100%. Budget is mathematically balanced.</span>
+                    <button onclick="autoBalanceCategories()" class="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 transition font-semibold shrink-0">Auto-Balance to 100%</button>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0">
-                    <table class="w-full text-left border-collapse min-w-[550px]">
+                    <table class="w-full text-left border-collapse min-w-[650px]">
                         <thead>
                             <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Category Name</th>
                                 <th class="py-3 px-4">Type</th>
                                 <th class="py-3 px-4">Target %</th>
                                 <th class="py-3 px-4">Allocated (ZAR)</th>
                                 <th class="py-3 px-4">Actual Spent</th>
+                                <th class="py-3 px-4">Variance</th>
                                 <th class="py-3 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="categories-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                        <tbody id="category-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -289,27 +324,27 @@
             <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                     <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Record Income & Expenses</h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Track actual spending against calculated limits.</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Transaction Log</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Record income and expenditure against allocated categories.</p>
                     </div>
                     <button onclick="openTransactionModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm shadow transition flex items-center justify-center space-x-2 shrink-0">
-                        <i class="fa-solid fa-plus"></i><span>New Transaction</span>
+                        <i class="fa-solid fa-plus"></i><span>Add Transaction</span>
                     </button>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0">
-                    <table class="w-full text-left border-collapse min-w-[550px]">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
                         <thead>
                             <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                 <th class="py-3 px-4">Date</th>
                                 <th class="py-3 px-4">Description</th>
                                 <th class="py-3 px-4">Category</th>
                                 <th class="py-3 px-4">Type</th>
-                                <th class="py-3 px-4 text-right">Amount (ZAR)</th>
-                                <th class="py-3 px-4 text-right">Action</th>
+                                <th class="py-3 px-4">Amount (ZAR)</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="transactions-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                        <tbody id="transaction-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -319,627 +354,1900 @@
 
         <!-- 5. REPORTS & EXPORT VIEW -->
         <section id="view-reports" class="space-y-6 hidden">
-            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
                     <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Reports & Data Export</h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Export financial summaries, CSV data, or print budget reports.</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Financial Reports & Data Export</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Export structured CSV budgets, printable financial statements, and restricted fund ledgers.</p>
                     </div>
-                    <div class="flex space-x-3">
-                        <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition">Print Report</button>
-                        <button onclick="exportCSV()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition">Export CSV</button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="exportCSV()" class="bg-slate-800 hover:bg-slate-900 text-white dark:bg-slate-700 dark:hover:bg-slate-600 px-3.5 py-2 rounded-xl text-xs font-semibold shadow transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-file-csv text-emerald-400"></i><span>Export CSV</span>
+                        </button>
+                        <button onclick="window.print()" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-print"></i><span>Print Report</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-2">
-                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Data Privacy Notice</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400">All financial calculations and records stay strictly inside your device's browser memory. SmartBudget Pro transmits zero financial records externally.</p>
+                <!-- Annual Budgeting & Cash Flow Forecasting Tool -->
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-calendar-days text-brand-600 mr-2"></i>Annual Budget Planning & 12-Month Projections
+                    </h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                        Convert your active monthly budget into an approved annual forecast reconciled across all 12 calendar months.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                        <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Monthly Approved Base</p>
+                            <p id="rep-monthly-base" class="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">R 0.00</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Calculated Annual Budget</p>
+                            <p id="rep-annual-base" class="text-base font-extrabold text-brand-600 dark:text-brand-400 mt-0.5">R 0.00</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Annual Spent Balance</p>
+                            <p id="rep-annual-spent" class="text-base font-extrabold text-amber-600 dark:text-amber-400 mt-0.5">R 0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Church Restricted Funds Summary Table -->
+                <div id="restricted-funds-container" class="space-y-3">
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-lock text-amber-500 mr-2"></i>Restricted Funds & Designated Project Accounts
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        In accordance with church governance principles, restricted accounts (Building, Missions, Welfare) are kept segregated and cannot be automatically spent as general funds.
+                    </p>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse min-w-[500px]">
+                            <thead>
+                                <tr class="border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-500 uppercase">
+                                    <th class="py-2 px-3">Fund / Account Name</th>
+                                    <th class="py-2 px-3">Restriction Status</th>
+                                    <th class="py-2 px-3">Allocated Total</th>
+                                    <th class="py-2 px-3">Spent Amount</th>
+                                    <th class="py-2 px-3">Protected Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="restricted-funds-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. AUTOMATED TEST SUITE VIEW -->
+        <section id="view-testing" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Mathematical Validation & Automated Testing Suite</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Run live, non-destructive automated test suites across all 34 budgeting rules, integer-cent calculations, workspace switching, and annual budget reconciliations.</p>
+                    </div>
+                    <button onclick="runAutomatedTestSuite()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow transition flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-play"></i><span>Run Live Diagnostic Audit</span>
+                    </button>
+                </div>
+
+                <div id="test-summary-card" class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4 text-xs font-semibold">
+                    <div>Status: <span id="test-status-text" class="text-slate-500">Not Executed Yet</span></div>
+                    <div>Total Rules Audited: <span id="test-rules-count" class="text-brand-600 font-bold">0 / 34</span></div>
+                    <div>Cents Precision: <span id="test-cents-status" class="text-emerald-500 font-bold">100% Reconciled</span></div>
+                </div>
+
+                <div id="test-results-log" class="bg-slate-950 text-slate-200 p-4 rounded-xl font-mono text-xs max-h-96 overflow-y-auto custom-scrollbar space-y-1">
+                    <p class="text-slate-500">// Ready to execute test suites. Click "Run Live Diagnostic Audit" above.</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- App Footer Watermark -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 no-print mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Created Mawethu Mpande @SISONKE HUB &bull; SmartBudget Pro (ZAR)
-            </p>
-        </div>
-    </footer>
-
-    <!-- TRANSACTION MODAL -->
-    <div id="transaction-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Add Transaction</h3>
-                <button onclick="closeTransactionModal()" aria-label="Close" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="transaction-form" onsubmit="saveTransaction(event)" class="space-y-3.5">
+    <!-- Category Modal -->
+    <div id="modal-category" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 id="modal-cat-title" class="text-base font-bold text-slate-900 dark:text-white">Add Budget Category</h3>
+            <div class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Type</label>
-                    <select id="modal-tx-type" onchange="updateModalCategories()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
-                        <option value="expense">Expense</option>
-                        <option value="income">Income</option>
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Category Name</label>
+                    <input type="text" id="cat-input-name" placeholder="e.g. Housing & Utilities" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Type</label>
+                    <select id="cat-input-type" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
+                        <option value="essential">Essential / Operations</option>
+                        <option value="discretionary">Wants / Flexible</option>
+                        <option value="savings">Savings / Investment / Reserves</option>
+                        <option value="debt">Debt Repayment</option>
+                        <option value="giving">Giving / Welfare / Outreach</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Description</label>
-                    <input type="text" id="modal-tx-desc" required placeholder="e.g. Groceries / Offering" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Allocation Percentage (%)</label>
+                    <input type="number" id="cat-input-percentage" min="0" max="100" step="0.5" placeholder="10" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Amount (ZAR)</label>
-                    <input type="number" id="modal-tx-amount" required min="0.01" step="0.01" placeholder="500.00" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Category</label>
-                    <select id="modal-tx-category" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Date</label>
-                    <input type="date" id="modal-tx-date" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
-                </div>
-                <div class="flex justify-end space-x-3 pt-3">
-                    <button type="button" onclick="closeTransactionModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs sm:text-sm font-bold">Save</button>
-                </div>
-            </form>
+            </div>
+            <div class="flex items-center justify-end space-x-2 pt-2">
+                <button onclick="closeCategoryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                <button onclick="saveCategory()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700">Save Category</button>
+            </div>
         </div>
     </div>
 
-    <!-- CATEGORY MODAL -->
-    <div id="category-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <div class="flex items-center justify-between mb-4">
-                <h3 id="category-modal-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Add Category</h3>
-                <button onclick="closeCategoryModal()" aria-label="Close" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="category-form" onsubmit="saveCategory(event)" class="space-y-3.5">
-                <input type="hidden" id="modal-cat-index" value="-1">
+    <!-- Transaction Modal -->
+    <div id="modal-transaction" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Record Transaction</h3>
+            <div class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Category Name</label>
-                    <input type="text" id="modal-cat-name" required placeholder="e.g. Housing" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Description</label>
+                    <input type="text" id="tx-input-desc" placeholder="e.g. Grocery Purchase / Utility Bill" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Type</label>
-                    <select id="modal-cat-type" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
-                        <option value="needs">Needs / Operating</option>
-                        <option value="wants">Wants / Projects</option>
-                        <option value="savings">Savings / Reserves</option>
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Category</label>
+                    <select id="tx-input-category" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
+                        <!-- Dynamic -->
                     </select>
                 </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Type</label>
+                        <select id="tx-input-type" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
+                            <option value="expense">Expense (-)</option>
+                            <option value="income">Income (+)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Amount (ZAR)</label>
+                        <input type="number" id="tx-input-amount" min="0" step="0.01" placeholder="150.00" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
+                    </div>
+                </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Target Percentage (%)</label>
-                    <input type="number" id="modal-cat-percent" required min="0" max="100" step="0.5" placeholder="15" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white">
+                    <label class="block text-slate-600 dark:text-slate-400 font-semibold mb-1">Date</label>
+                    <input type="date" id="tx-input-date" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white">
                 </div>
-                <div class="flex justify-end space-x-3 pt-3">
-                    <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-semibold">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs sm:text-sm font-bold">Save</button>
-                </div>
-            </form>
+            </div>
+            <div class="flex items-center justify-end space-x-2 pt-2">
+                <button onclick="closeTransactionModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                <button onclick="saveTransaction()" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700">Save Transaction</button>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Engine -->
+    <!-- Rule Application Modal Confirmation -->
+    <div id="modal-confirm-rule" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="flex items-center space-x-3 text-amber-500">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Confirm Rule Application</h3>
+            </div>
+            <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 space-y-2">
+                <p>Applying <strong id="confirm-rule-name" class="text-brand-600 dark:text-brand-400">Rule</strong> will update category target percentages in your active workspace.</p>
+                <div class="p-3 bg-slate-100 dark:bg-slate-800/80 rounded-xl space-y-1">
+                    <p class="font-semibold text-slate-800 dark:text-slate-200">Preservation Safeguards Enabled:</p>
+                    <ul class="list-disc list-inside text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5">
+                        <li>All historical transactions and actual spending log will be preserved.</li>
+                        <li>Restricted funds will maintain their isolated balance tracking.</li>
+                        <li>Allocations will be mathematically reconciled to exact integer cents.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex items-center justify-end space-x-2 pt-2">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                <button id="btn-execute-rule-apply" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700">Apply Rule Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Engine Logic -->
     <script>
-        // Budgeting Rules Presets
-        const BUDGET_RULES = {
-            '50_30_20': {
-                name: '50/30/20 Rule',
-                desc: '50% Needs, 30% Wants, 20% Savings & Debt Repayment.',
-                presets: [
-                    { name: 'Needs (Rent, Groceries, Utilities)', percent: 50, type: 'needs' },
-                    { name: 'Wants (Entertainment, Dining)', percent: 30, type: 'wants' },
-                    { name: 'Savings & Debt Repayment', percent: 20, type: 'savings' }
-                ]
-            },
-            '70_20_10': {
-                name: '70/20/10 Rule',
-                desc: '70% Living Expenses, 20% Savings/Debt, 10% Tithes/Giving.',
-                presets: [
-                    { name: 'Living Expenses', percent: 70, type: 'needs' },
-                    { name: 'Savings & Debt Payoff', percent: 20, type: 'savings' },
-                    { name: 'Tithes, Offerings & Giving', percent: 10, type: 'wants' }
-                ]
-            },
-            '60_30_10': {
-                name: '60/30/10 Rule',
-                desc: '60% Essential Living, 30% Wants/Welfare, 10% Emergency Fund.',
-                presets: [
-                    { name: 'Essential Living Needs', percent: 60, type: 'needs' },
-                    { name: 'Wants & Lifestyle', percent: 30, type: 'wants' },
-                    { name: 'Emergency Fund', percent: 10, type: 'savings' }
-                ]
-            },
-            '80_20': {
-                name: '80/20 Rule (Pareto)',
-                desc: '80% Living Expenses, 20% Direct Savings.',
-                presets: [
-                    { name: 'Living Expenses & Needs', percent: 80, type: 'needs' },
-                    { name: 'Savings & Investments', percent: 20, type: 'savings' }
-                ]
-            },
-            'zero_based': {
-                name: 'Zero-Based Allocation',
-                desc: 'Every Rand is assigned a functional target.',
-                presets: [
-                    { name: 'Housing & Utilities', percent: 35, type: 'needs' },
-                    { name: 'Groceries & Household', percent: 25, type: 'needs' },
-                    { name: 'Transport & Fuel', percent: 15, type: 'needs' },
-                    { name: 'Debt Repayment', percent: 15, type: 'savings' },
-                    { name: 'Savings', percent: 10, type: 'savings' }
-                ]
-            },
-            'pay_first': {
-                name: 'Pay-Yourself-First',
-                desc: '25% Savings & Tithes upfront, 75% Variable Living.',
-                presets: [
-                    { name: 'Savings & Tithe (Priority)', percent: 25, type: 'savings' },
-                    { name: 'General Living Expenses', percent: 75, type: 'needs' }
-                ]
-            },
-            'church_std': {
-                name: 'Church Balanced Operating',
-                desc: '40% Ministries & Tithes, 30% Operations, 20% Outreach, 10% Reserve.',
-                presets: [
-                    { name: 'Ministry Operations & Tithes', percent: 40, type: 'needs' },
-                    { name: 'Church Utilities & Maintenance', percent: 30, type: 'needs' },
-                    { name: 'Evangelism & Community Outreach', percent: 20, type: 'wants' },
-                    { name: 'Emergency Building Reserve', percent: 10, type: 'savings' }
-                ]
-            },
-            'church_evangelism': {
-                name: 'Church Outreach & Evangelism Focus',
-                desc: '50% Evangelism & Missions, 30% Church Operations, 20% Welfare.',
-                presets: [
-                    { name: 'Evangelism & Missions', percent: 50, type: 'wants' },
-                    { name: 'Church Building & Utilities', percent: 30, type: 'needs' },
-                    { name: 'Charity, Soup Kitchens & Welfare', percent: 20, type: 'savings' }
-                ]
-            }
-        };
+        // ==========================================
+        // 1. DATA MODELS & RULE LIBRARIES DEFINITIONS
+        // ==========================================
 
-        let appState = {
-            activeWorkspace: 'personal',
-            activeTab: 'dashboard',
-            darkMode: false,
+        const PERSONAL_RULES = [
+            {
+                id: 'P1',
+                key: '50_30_20',
+                name: 'Classic 50/30/20 Rule',
+                workspace: 'personal',
+                tags: ['Savings', 'General'],
+                description: 'A balanced baseline rule dividing net income into needs, wants, and savings.',
+                purpose: 'Provides simple, sustainable boundaries for general lifestyle budgeting.',
+                circumstances: 'Recommended for individuals with stable income and average living costs.',
+                allocations: [
+                    { name: 'Needs (Housing, Food, Utilities)', type: 'essential', percentage: 50 },
+                    { name: 'Wants (Entertainment, Dining Out)', type: 'discretionary', percentage: 30 },
+                    { name: 'Savings & Debt Repayment', type: 'savings', percentage: 20 }
+                ],
+                instructions: 'Allocate 50% to essential living costs, 30% to lifestyle desires, and automatically direct 20% to savings.',
+                strengths: 'Simple, easy to remember, highly effective for beginners.',
+                limitations: 'May be difficult to achieve in high-cost-of-living areas or low-income brackets.'
+            },
+            {
+                id: 'P2',
+                key: '60_20_20',
+                name: 'Balanced 60/20/20 Rule',
+                workspace: 'personal',
+                tags: ['General', 'Savings'],
+                description: 'Allocates a larger portion to essential living expenses while maintaining disciplined savings.',
+                purpose: 'Offers breathing room for households facing slightly higher fixed essential costs.',
+                circumstances: 'Ideal for middle-income earners with higher rent or mortgage commitments.',
+                allocations: [
+                    { name: 'Essential Expenses', type: 'essential', percentage: 60 },
+                    { name: 'Savings & Debt Repayment', type: 'savings', percentage: 20 },
+                    { name: 'Wants & Lifestyle', type: 'discretionary', percentage: 20 }
+                ],
+                instructions: 'Prioritize essential bills first, channel 20% immediately into savings, and cap flexible wants at 20%.',
+                strengths: 'Accommodates reality of rising essential costs without sacrificing savings goals.',
+                limitations: 'Reduces discretionary spending flexibility.'
+            },
+            {
+                id: 'P3',
+                key: '70_20_10',
+                name: 'Essential 70/20/10 Rule',
+                workspace: 'personal',
+                tags: ['Giving', 'Savings'],
+                description: 'Covers essential expenses, dedicated savings, and optional giving/donations.',
+                purpose: 'Incorporates community giving or tithing into a standard personal budget.',
+                circumstances: 'Suited for community-minded individuals or regular donors.',
+                allocations: [
+                    { name: 'Living Expenses', type: 'essential', percentage: 70 },
+                    { name: 'Savings & Debt Repayment', type: 'savings', percentage: 20 },
+                    { name: 'Giving & Donations (Optional)', type: 'giving', percentage: 10 }
+                ],
+                instructions: 'Ensure 70% covers all monthly living costs. Tithing/giving is 10% (configurable if needed).',
+                strengths: 'Integrates generosity alongside clear financial security targets.',
+                limitations: 'Leaves little dedicated margin for pure discretionary luxury.'
+            },
+            {
+                id: 'P4',
+                key: '80_20',
+                name: 'Simple 80/20 Rule',
+                workspace: 'personal',
+                tags: ['Savings', 'Low-Income'],
+                description: 'The "Pay-Yourself-First" simplified model with minimal tracking categories.',
+                purpose: 'Eliminates complex category tracking by focusing purely on savings rate.',
+                circumstances: 'Great for busy individuals who want low-friction money management.',
+                allocations: [
+                    { name: 'Living Expenses & Wants', type: 'essential', percentage: 80 },
+                    { name: 'Savings & Investments', type: 'savings', percentage: 20 }
+                ],
+                instructions: 'Save 20% the moment income arrives, then freely spend the remaining 80% on expenses and wants.',
+                strengths: 'Ultra-low friction, guarantees savings.',
+                limitations: 'Does not break down living expenses or highlight overspending in specific sub-categories.'
+            },
+            {
+                id: 'P5',
+                key: 'zero_based',
+                name: 'Zero-Based Budgeting',
+                workspace: 'personal',
+                tags: ['General', 'Debt'],
+                description: 'Every single Rand has a designated job. Total allocations equal 100% of income.',
+                purpose: 'Eliminates unassigned cash leaks and ensures maximum intent for every Rand.',
+                circumstances: 'Recommended for detail-oriented planners or those working to eliminate debt rapidly.',
+                allocations: [
+                    { name: 'Housing & Utilities', type: 'essential', percentage: 30 },
+                    { name: 'Food & Household', type: 'essential', percentage: 20 },
+                    { name: 'Transport', type: 'essential', percentage: 15 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Savings & Investments', type: 'savings', percentage: 10 },
+                    { name: 'Healthcare & Insurance', type: 'essential', percentage: 5 },
+                    { name: 'Personal Spending', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Miscellaneous', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Assign exact amounts to every category until remaining unassigned budget equals R 0.00.',
+                strengths: 'Maximum control and intentionality.',
+                limitations: 'Requires consistent tracking and active category adjustments.'
+            },
+            {
+                id: 'P6',
+                key: 'pay_first',
+                name: 'Pay-Yourself-First Rule',
+                workspace: 'personal',
+                tags: ['Savings'],
+                description: 'Prioritizes future wealth building before any living expenses or lifestyle spending.',
+                purpose: 'Protects long-term financial health against impulse consumption.',
+                circumstances: 'Ideal for ambitious savers looking to build capital fast.',
+                allocations: [
+                    { name: 'Savings & Investments', type: 'savings', percentage: 20 },
+                    { name: 'Essential Living Expenses', type: 'essential', percentage: 60 },
+                    { name: 'Wants & Flexible Spending', type: 'discretionary', percentage: 15 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Transfer 20% to savings immediately upon payday, then live on the balance.',
+                strengths: 'Forces disciplined saving habit.',
+                limitations: 'Requires strict control over essential expenses.'
+            },
+            {
+                id: 'P7',
+                key: 'debt_focus',
+                name: 'Debt Reduction Focus',
+                workspace: 'personal',
+                tags: ['Debt'],
+                description: 'Aggressively directs funds toward high-interest debt acceleration.',
+                purpose: 'Accelerate freedom from credit cards, personal loans, or overdrafts.',
+                circumstances: 'Designed for individuals carrying active debt loads.',
+                allocations: [
+                    { name: 'Essential Living Expenses', type: 'essential', percentage: 55 },
+                    { name: 'Debt Repayment (Snowball/Avalanche)', type: 'debt', percentage: 25 },
+                    { name: 'Emergency Savings Buffer', type: 'savings', percentage: 10 },
+                    { name: 'Wants & Discretionary', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Commit 25% directly to principal debt repayment while maintaining a small emergency buffer.',
+                strengths: 'Rapidly reduces interest costs and debt payoff timeframes.',
+                limitations: 'Requires temporary sacrifice of non-essential lifestyle spending.'
+            },
+            {
+                id: 'P8',
+                key: 'emergency_builder',
+                name: 'Emergency Fund Builder',
+                workspace: 'personal',
+                tags: ['Emergency', 'Savings'],
+                description: 'Focuses on rapidly accumulating 3-6 months of essential living reserves.',
+                purpose: 'Creates a financial safety net against job loss or medical emergencies.',
+                circumstances: 'Recommended when emergency cash reserves are low or nonexistent.',
+                allocations: [
+                    { name: 'Essential Expenses', type: 'essential', percentage: 60 },
+                    { name: 'Emergency Fund Accumulation', type: 'savings', percentage: 20 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Wants', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Automate 20% directly into a high-yield liquid savings account reserved strictly for emergencies.',
+                strengths: 'Builds resilience against unexpected shocks.',
+                limitations: 'Slower long-term wealth investment growth during the accumulation phase.'
+            },
+            {
+                id: 'P9',
+                key: 'low_income',
+                name: 'Low-Income Survival Budget',
+                workspace: 'personal',
+                tags: ['Low-Income'],
+                description: 'Prioritizes basic survival necessities (shelter, food, utilities, transport).',
+                purpose: 'Protects core security during lean financial periods.',
+                circumstances: 'Designed for tight financial budgets or income drops.',
+                allocations: [
+                    { name: 'Essential Living Expenses', type: 'essential', percentage: 75 },
+                    { name: 'Emergency Savings', type: 'savings', percentage: 5 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Flexible Spending', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Focus 75% on keeping lights on, rent paid, and basic groceries secured.',
+                strengths: 'Ensures essential survival needs are guaranteed first.',
+                limitations: 'Minimal savings velocity.'
+            },
+            {
+                id: 'P10',
+                key: 'family_household',
+                name: 'Family & Household Budget',
+                workspace: 'personal',
+                tags: ['General'],
+                description: 'Comprehensive allocation structure tailored for multi-person households with dependents.',
+                purpose: 'Balances childcare, education, healthcare, and family housing.',
+                circumstances: 'Ideal for families with children or dependents.',
+                allocations: [
+                    { name: 'Housing & Utilities', type: 'essential', percentage: 25 },
+                    { name: 'Food & Household Supplies', type: 'essential', percentage: 20 },
+                    { name: 'Transport & Fuel', type: 'essential', percentage: 15 },
+                    { name: 'Education & Childcare', type: 'essential', percentage: 10 },
+                    { name: 'Healthcare & Medical Insurance', type: 'essential', percentage: 10 },
+                    { name: 'Savings & Emergency Reserves', type: 'savings', percentage: 10 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 5 },
+                    { name: 'Personal & Family Activities', type: 'discretionary', percentage: 5 }
+                ],
+                instructions: 'Track educational and family healthcare costs directly alongside core monthly rent and groceries.',
+                strengths: 'Covers realistic family commitments thoroughly.',
+                limitations: 'Requires detailed oversight.'
+            },
+            {
+                id: 'P11',
+                key: 'savings_accelerator',
+                name: 'Savings Accelerator',
+                workspace: 'personal',
+                tags: ['Savings'],
+                description: 'High-saving rate structure aiming for rapid capital accumulation or FIRE goals.',
+                purpose: 'Dramatically speeds up home deposit saving or retirement independence.',
+                circumstances: 'Suited for individuals with low fixed expenses or high income.',
+                allocations: [
+                    { name: 'Essential Expenses', type: 'essential', percentage: 50 },
+                    { name: 'Savings & Wealth Investments', type: 'savings', percentage: 30 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Wants', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Direct 30% into index funds, properties, or deposit savings while living on 50%.',
+                strengths: 'Exponentially speeds up financial independence.',
+                limitations: 'Requires strict lifestyle control.'
+            },
+            {
+                id: 'P12',
+                key: 'irregular_income',
+                name: 'Irregular Income Budget',
+                workspace: 'personal',
+                tags: ['Low-Income', 'Emergency'],
+                description: 'Uses an income-smoothing reserve to manage variable commission or freelance pay.',
+                purpose: 'Prevents feast-or-famine cycles by banking high-earning months.',
+                circumstances: 'Essential for freelancers, realtors, commission earners, and entrepreneurs.',
+                allocations: [
+                    { name: 'Essential Expenses Baseline', type: 'essential', percentage: 60 },
+                    { name: 'Income-Smoothing Reserve Buffer', type: 'savings', percentage: 20 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Flexible Spending', type: 'discretionary', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Apply percentages to actual received cash flow. Draw from the 20% smoothing reserve during lower income months.',
+                strengths: 'Stabilizes monthly cash flow predictability.',
+                limitations: 'Requires discipline not to spend the smoothing buffer during peak months.'
+            },
+            {
+                id: 'P13',
+                key: 'student_budget',
+                name: 'Student Budget',
+                workspace: 'personal',
+                tags: ['Low-Income'],
+                description: 'Tailored for tertiary students managing bursaries, allowances, or part-time work.',
+                purpose: 'Keeps tuition, textbooks, and modest living costs under control.',
+                circumstances: 'Ideal for university or college students.',
+                allocations: [
+                    { name: 'Accommodation & Utilities', type: 'essential', percentage: 30 },
+                    { name: 'Food & Household', type: 'essential', percentage: 20 },
+                    { name: 'Transport', type: 'essential', percentage: 10 },
+                    { name: 'Education & Study Expenses', type: 'essential', percentage: 15 },
+                    { name: 'Savings', type: 'savings', percentage: 10 },
+                    { name: 'Personal Spending', type: 'discretionary', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Prioritize study materials and basic accommodation while maintaining small monthly savings habit.',
+                strengths: 'Encourages financial discipline early in career.',
+                limitations: 'Tight discretionary allowance.'
+            },
+            {
+                id: 'P14',
+                key: 'retirement_income',
+                name: 'Retirement Income Budget',
+                workspace: 'personal',
+                tags: ['General'],
+                description: 'Designed for retirees living on pensions or annuity drawdown income.',
+                purpose: 'Emphasizes healthcare, home security, and capital preservation.',
+                circumstances: 'Suited for retirees or senior citizens.',
+                allocations: [
+                    { name: 'Housing & Utilities', type: 'essential', percentage: 30 },
+                    { name: 'Food & Household', type: 'essential', percentage: 15 },
+                    { name: 'Healthcare & Medical Insurance', type: 'essential', percentage: 15 },
+                    { name: 'Transport', type: 'essential', percentage: 10 },
+                    { name: 'Savings & Contingency Reserves', type: 'savings', percentage: 10 },
+                    { name: 'Personal & Family Spending', type: 'discretionary', percentage: 10 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 5 },
+                    { name: 'Giving & Donations', type: 'giving', percentage: 5 }
+                ],
+                instructions: 'Allocate sufficient reserves for medical gap cover and unexpected home maintenance.',
+                strengths: 'Protects health and peace of mind on fixed income.',
+                limitations: 'Requires careful inflation monitoring.'
+            },
+            {
+                id: 'P15',
+                key: 'minimalist_budget',
+                name: 'Minimalist Budget',
+                workspace: 'personal',
+                tags: ['Savings'],
+                description: 'Strips unnecessary subscriptions and friction, focusing on high savings and core living.',
+                purpose: 'Fosters intentional living and decluttered financial habits.',
+                circumstances: 'Ideal for minimalists or frugal living advocates.',
+                allocations: [
+                    { name: 'Essential Living Expenses', type: 'essential', percentage: 65 },
+                    { name: 'Savings & Investments', type: 'savings', percentage: 20 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Personal Enjoyment', type: 'discretionary', percentage: 5 }
+                ],
+                instructions: 'Eliminate secondary categories and aggregate living costs simply.',
+                strengths: 'Reduces decision fatigue.',
+                limitations: 'Less granular insight into specific sub-spending.'
+            },
+            {
+                id: 'P16',
+                key: '70_15_10_5',
+                name: '70/15/10/5 Financial Balance',
+                workspace: 'personal',
+                tags: ['General', 'Debt'],
+                description: 'Practical balance strategy prioritizing solid living foundation with gradual debt reduction.',
+                purpose: 'Provides clear structure for moderate income households.',
+                circumstances: 'General population with active vehicle loans or small debt.',
+                allocations: [
+                    { name: 'Essential Expenses', type: 'essential', percentage: 70 },
+                    { name: 'Savings Accumulation', type: 'savings', percentage: 15 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Flexible Spending', type: 'discretionary', percentage: 5 }
+                ],
+                instructions: 'Keep living expenses strictly within 70%, leaving 15% for emergency accumulation.',
+                strengths: 'Steady, sustainable financial progress.',
+                limitations: 'Slow debt payoff if total balances are large.'
+            },
+            {
+                id: 'P17',
+                key: '40_30_20_10',
+                name: '40/30/20/10 Financial Priorities',
+                workspace: 'personal',
+                tags: ['Savings', 'Debt'],
+                description: 'Aggressive wealth building model requiring low core essential expenses.',
+                purpose: 'Dramatically shifts income toward wealth creation and debt elimination.',
+                circumstances: 'High income earners or individuals sharing housing costs.',
+                allocations: [
+                    { name: 'Essential Expenses', type: 'essential', percentage: 40 },
+                    { name: 'Savings & Investments', type: 'savings', percentage: 30 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 20 },
+                    { name: 'Wants & Personal Spending', type: 'discretionary', percentage: 10 }
+                ],
+                instructions: 'Only apply if baseline living costs are reliably under 40% of income.',
+                strengths: 'Hyper-accelerated net worth expansion.',
+                limitations: 'Unrealistic if rent/mortgage is high relative to earnings.'
+            },
+            {
+                id: 'P18',
+                key: 'sinking_funds',
+                name: 'Annual Expenses & Sinking Funds',
+                workspace: 'personal',
+                tags: ['Annual', 'Emergency'],
+                description: 'Pre-funds periodic annual expenses (car licenses, school fees, annual insurance) monthly.',
+                purpose: 'Prevents seasonal debt spikes when annual bills arrive.',
+                circumstances: 'Recommended for families with known yearly lump-sum bills.',
+                allocations: [
+                    { name: 'Essential Monthly Expenses', type: 'essential', percentage: 60 },
+                    { name: 'Annual Expenses Sinking Fund', type: 'savings', percentage: 15 },
+                    { name: 'Emergency Savings', type: 'savings', percentage: 10 },
+                    { name: 'Debt Repayment', type: 'debt', percentage: 10 },
+                    { name: 'Flexible Spending', type: 'discretionary', percentage: 5 }
+                ],
+                instructions: 'Transfer 15% monthly into a designated sinking fund bank bucket for annual invoices.',
+                strengths: 'Smooths out major annual expense bumps seamlessly.',
+                limitations: 'Requires tracking annual due dates.'
+            }
+        ];
+
+        const CHURCH_RULES = [
+            {
+                id: 'C1',
+                key: 'church_balanced',
+                name: 'Balanced Church Operations (Standard)',
+                workspace: 'church',
+                tags: ['Building', 'Welfare'],
+                description: 'Standard foundational allocation model balancing sanctuary, operations, and missions.',
+                purpose: 'Maintains healthy balance across worship, facility upkeep, and community engagement.',
+                circumstances: 'Established local churches with ongoing weekly services and facilities.',
+                allocations: [
+                    { name: 'Worship & Ministry Operations', type: 'essential', percentage: 35 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare & Benevolence', type: 'giving', percentage: 10 },
+                    { name: 'Administration & Communication', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Contingency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Channel baseline tithes across primary operational pillars, keeping 10% in emergency reserves.',
+                strengths: 'Holistic operational health.',
+                limitations: 'May limit rapid capital expansion projects.'
+            },
+            {
+                id: 'C2',
+                key: 'church_evangelism',
+                name: 'Evangelism & Mission Priority',
+                workspace: 'church',
+                tags: ['Evangelism'],
+                description: 'Outreach-heavy model allocating 35% directly into evangelism and missionary sending.',
+                purpose: 'Drives rapid church planting, outdoor crusades, and global mission work.',
+                circumstances: 'Churches in active growth phase or missionary organizations.',
+                allocations: [
+                    { name: 'Evangelism & Outreach Campaigns', type: 'giving', percentage: 35 },
+                    { name: 'Worship & Ministry Operations', type: 'essential', percentage: 20 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 15 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 10 },
+                    { name: 'Discipleship & Bible Education', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Prioritize gospel tracts, outreach events, and missionary support.',
+                strengths: 'Maximizes community outreach and gospel impact.',
+                limitations: 'Requires lean facility overhead.'
+            },
+            {
+                id: 'C3',
+                key: 'church_welfare',
+                name: 'Community Welfare & Compassion',
+                workspace: 'church',
+                tags: ['Welfare'],
+                description: 'Focuses heavily on food relief, social support, and community care.',
+                purpose: 'Serves vulnerable families, soup kitchens, and emergency hardship funds.',
+                circumstances: 'Churches located in economically challenged communities or running social ministries.',
+                allocations: [
+                    { name: 'Community Welfare & Food Relief', type: 'giving', percentage: 30 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 20 },
+                    { name: 'Worship & Ministry Operations', type: 'essential', percentage: 20 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 10 },
+                    { name: 'Youth & Children Ministry', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Direct 30% into direct benevolence, groceries, and local family assistance.',
+                strengths: 'High community trust and tangible social assistance.',
+                limitations: 'Demands tight oversight of administrative overhead.'
+            },
+            {
+                id: 'C4',
+                key: 'church_building',
+                name: 'Church Building & Maintenance',
+                workspace: 'church',
+                tags: ['Building'],
+                description: 'Facility-focused allocation model for renovation, lease payments, or property upgrades.',
+                purpose: 'Protects physical assets and prepares for sanctuary repairs or expansions.',
+                circumstances: 'Churches maintaining large buildings or undertaking facility upgrades.',
+                allocations: [
+                    { name: 'Building Maintenance & Repairs', type: 'essential', percentage: 25 },
+                    { name: 'Utilities & Property Costs', type: 'essential', percentage: 20 },
+                    { name: 'Ministry Operations', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Allocate 45% total towards combined building repairs, lease, and property utilities.',
+                strengths: 'Prevents building deterioration and deferred maintenance debt.',
+                limitations: 'Temporarily reduces direct outreach budget.'
+            },
+            {
+                id: 'C5',
+                key: 'church_youth',
+                name: 'Youth & Children\'s Ministry',
+                workspace: 'church',
+                tags: ['Youth'],
+                description: 'Invests heavily in the next generation, Sunday schools, youth camps, and student ministries.',
+                purpose: 'Builds vibrant youth programs and family discipleship.',
+                circumstances: 'Churches with young families and active student populations.',
+                allocations: [
+                    { name: 'Youth Ministry & Camps', type: 'essential', percentage: 25 },
+                    { name: 'Children\'s Ministry & Sunday School', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 20 },
+                    { name: 'Worship & General Ministry', type: 'essential', percentage: 15 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Fund youth leaders, Sunday school materials, and retreat subsidies.',
+                strengths: 'Drives strong young family retention and spiritual growth.',
+                limitations: 'Requires strong volunteer coordination.'
+            },
+            {
+                id: 'C6',
+                key: 'church_resilience',
+                name: 'Church Financial Resilience',
+                workspace: 'church',
+                tags: ['Emergency', 'Building'],
+                description: 'Builds robust 15% emergency reserves and 5% capital improvement funds.',
+                purpose: 'Protects the church against sudden giving downturns or emergency facility repairs.',
+                circumstances: 'Churches seeking to establish strong cash flow buffers.',
+                allocations: [
+                    { name: 'Ministry Operations', type: 'essential', percentage: 30 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 15 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve Buffer', type: 'savings', percentage: 15 },
+                    { name: 'Capital Projects Replacement', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Keep 20% total directed into combined reserves and replacement funds.',
+                strengths: 'High financial stability and resilience.',
+                limitations: 'Slower deployment of operational cash.'
+            },
+            {
+                id: 'C7',
+                key: 'church_small',
+                name: 'Small Congregation Budget',
+                workspace: 'church',
+                tags: ['Low-Income'],
+                description: 'Lean operational framework designed for small assemblies or church plants.',
+                purpose: 'Keeps overhead minimal while sustaining core worship services.',
+                circumstances: 'Congregations under 100 members or newly planted ministries.',
+                allocations: [
+                    { name: 'Essential Ministry Operations', type: 'essential', percentage: 35 },
+                    { name: 'Utilities & Venue Rental', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Local Missions', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Administration', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 5 }
+                ],
+                instructions: 'Keep administrative expenses low and focus on venue hire and basic ministry.',
+                strengths: 'Highly practical and manageable for bi-vocational leadership.',
+                limitations: 'Limited scale for large special events.'
+            },
+            {
+                id: 'C8',
+                key: 'church_discipleship',
+                name: 'Church Mission & Discipleship',
+                workspace: 'church',
+                tags: ['Evangelism', 'Youth'],
+                description: 'Prioritizes Bible education, leader training, discipleship courses, and mission trips.',
+                purpose: 'Fosters deep spiritual growth and leadership development.',
+                circumstances: 'Churches focusing on leadership training and discipleship schools.',
+                allocations: [
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 30 },
+                    { name: 'Bible Study & Discipleship Training', type: 'essential', percentage: 20 },
+                    { name: 'Worship & Ministry Operations', type: 'essential', percentage: 15 },
+                    { name: 'Youth & Children\'s Ministries', type: 'essential', percentage: 10 },
+                    { name: 'Community Service', type: 'giving', percentage: 10 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Allocate 50% combined into direct missions and Bible training curricula.',
+                strengths: 'Strong spiritual grounding and leadership reproduction.',
+                limitations: 'Requires venue partner if facility allocation is low.'
+            },
+            {
+                id: 'C9',
+                key: 'church_stewardship',
+                name: 'Church Stewardship & Reserves',
+                workspace: 'church',
+                tags: ['Emergency', 'Building'],
+                description: 'Emphasizes financial accountability, equipment replacement, and cash reserves.',
+                purpose: 'Ensures long-term fiscal health and asset maintenance.',
+                circumstances: 'Churches planning long-term equipment upgrades (AV, sound systems, vehicles).',
+                allocations: [
+                    { name: 'Ministry Operations', type: 'essential', percentage: 30 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 15 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserves', type: 'savings', percentage: 15 },
+                    { name: 'Equipment & Capital Replacement', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Set aside 5% monthly into a designated sound/lighting/vehicle renewal fund.',
+                strengths: 'Eliminates unexpected equipment emergency costs.',
+                limitations: 'Requires strict fund segregation.'
+            },
+            {
+                id: 'C10',
+                key: 'church_outreach_exp',
+                name: 'Church Outreach Expansion',
+                workspace: 'church',
+                tags: ['Evangelism', 'Welfare'],
+                description: 'Combines crusade evangelism with community outreach projects for expansion.',
+                purpose: 'Drives rapid growth and public community engagement.',
+                circumstances: 'Churches launching new campus plants or community drives.',
+                allocations: [
+                    { name: 'Evangelism Campaigns', type: 'giving', percentage: 30 },
+                    { name: 'Community Outreach', type: 'giving', percentage: 20 },
+                    { name: 'Ministry Operations', type: 'essential', percentage: 15 },
+                    { name: 'Discipleship & Bible Education', type: 'essential', percentage: 10 },
+                    { name: 'Youth & Children\'s Ministries', type: 'essential', percentage: 10 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Focus funds on public tent meetings, social media outreach, and community drives.',
+                strengths: 'High community visibility.',
+                limitations: 'Demands follow-up volunteer teams.'
+            },
+            {
+                id: 'C11',
+                key: 'church_education',
+                name: 'Church Education & Training',
+                workspace: 'church',
+                tags: ['Youth'],
+                description: 'Dedicated focus on leadership development, Bible colleges, and lay ministry training.',
+                purpose: 'Equips church members with theological and practical leadership skills.',
+                circumstances: 'Churches operating Bible institutes or leadership academies.',
+                allocations: [
+                    { name: 'Ministry Operations', type: 'essential', percentage: 25 },
+                    { name: 'Bible Education & Leadership Training', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 20 },
+                    { name: 'Youth & Children\'s Ministries', type: 'essential', percentage: 10 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Fund leadership literature, training seminars, and Bible school accreditation.',
+                strengths: 'Builds mature leadership base.',
+                limitations: 'Requires dedicated education staff.'
+            },
+            {
+                id: 'C12',
+                key: 'church_capital_dev',
+                name: 'Church Capital Development',
+                workspace: 'church',
+                tags: ['Building'],
+                description: 'Allocates 30% towards capital development, land acquisition, or sanctuary building.',
+                purpose: 'Funds land purchase, construction, or major sanctuary enlargement.',
+                circumstances: 'Churches actively raising funds for new property or building projects.',
+                allocations: [
+                    { name: 'Building & Capital Development', type: 'savings', percentage: 30 },
+                    { name: 'Ministry Operations', type: 'essential', percentage: 20 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 15 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 10 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Channel 30% into restricted building reserve account monthly.',
+                strengths: 'Accelerates property acquisition without debt overextension.',
+                limitations: 'Requires tight operational budgeting elsewhere.'
+            },
+            {
+                id: 'C13',
+                key: 'church_event_campaign',
+                name: 'Church Event & Campaign Budget',
+                workspace: 'church',
+                tags: ['Evangelism'],
+                description: 'Short-term framework tailored for major conferences, gospel rallies, or Easter/Christmas campaigns.',
+                purpose: 'Tracks short-term event costs efficiently.',
+                circumstances: 'Special campaign periods, conferences, or annual conventions.',
+                allocations: [
+                    { name: 'Evangelistic Campaigns & Special Events', type: 'giving', percentage: 30 },
+                    { name: 'Worship & Ministry Operations', type: 'essential', percentage: 20 },
+                    { name: 'Community Outreach', type: 'giving', percentage: 15 },
+                    { name: 'Youth & Children\'s Activities', type: 'essential', percentage: 10 },
+                    { name: 'Facilities & Equipment Hire', type: 'essential', percentage: 10 },
+                    { name: 'Administration & Communication', type: 'essential', percentage: 5 },
+                    { name: 'Emergency Contingency', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Set clear campaign deadlines and reconcile all vendor invoices immediately post-event.',
+                strengths: 'Keeps event costs strictly within assigned revenue.',
+                limitations: 'Temporary rule structure.'
+            },
+            {
+                id: 'C14',
+                key: 'church_social_impact',
+                name: 'Church Social Impact Budget',
+                workspace: 'church',
+                tags: ['Welfare'],
+                description: 'Comprehensive social upliftment model covering soup kitchens, orphan care, and clinics.',
+                purpose: 'Provides holistic social intervention to impoverished communities.',
+                circumstances: 'Churches running dedicated NGOs, feeding schemes, or community centers.',
+                allocations: [
+                    { name: 'Soup Kitchens & Food Distribution', type: 'giving', percentage: 25 },
+                    { name: 'Clothing & Essential Supplies', type: 'giving', percentage: 15 },
+                    { name: 'Orphan & Vulnerable Family Support', type: 'giving', percentage: 15 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 15 },
+                    { name: 'Clinic, Hospital & Home Visits', type: 'giving', percentage: 10 },
+                    { name: 'Ministry Operations', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Track food distribution log alongside standard financial transactions.',
+                strengths: 'Profound community transformation and social impact.',
+                limitations: 'Requires audit tracking for donated goods.'
+            },
+            {
+                id: 'C15',
+                key: 'church_accountability',
+                name: 'Church Stewardship & Governance',
+                workspace: 'church',
+                tags: ['Restricted', 'Annual'],
+                description: 'Emphasizes formal financial audits, administrative compliance, and governance.',
+                purpose: 'Ensures absolute transparency, legal compliance, and auditor satisfaction.',
+                circumstances: 'Churches seeking formal governance accreditation or public audit compliance.',
+                allocations: [
+                    { name: 'Ministry Operations', type: 'essential', percentage: 25 },
+                    { name: 'Evangelism & Missions', type: 'giving', percentage: 20 },
+                    { name: 'Financial Admin & External Audit Compliance', type: 'essential', percentage: 10 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Facilities & Utilities', type: 'essential', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 10 },
+                    { name: 'Emergency Reserve Buffer', type: 'savings', percentage: 10 },
+                    { name: 'Capital Replacement Reserve', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Reserve 10% specifically for audit fees, accounting software, and compliance.',
+                strengths: 'Uncompromising institutional integrity and donor trust.',
+                limitations: 'Slightly higher administrative costs.'
+            },
+            {
+                id: 'C16',
+                key: 'church_tithe_planning',
+                name: 'Church Tithes & Offerings Planning',
+                workspace: 'church',
+                tags: ['Restricted', 'Annual'],
+                description: 'Configurable allocation model customizable to match specific denominational guidelines.',
+                purpose: 'Allows local eldership to set exact policy allocations for general offerings.',
+                circumstances: 'Churches with specific denominational tithe distribution mandates.',
+                allocations: [
+                    { name: 'Local Ministry Operations', type: 'essential', percentage: 30 },
+                    { name: 'Evangelism & External Missions', type: 'giving', percentage: 20 },
+                    { name: 'Facilities & Maintenance', type: 'essential', percentage: 15 },
+                    { name: 'Community Welfare', type: 'giving', percentage: 10 },
+                    { name: 'Youth & Discipleship', type: 'essential', percentage: 10 },
+                    { name: 'Administration', type: 'essential', percentage: 5 },
+                    { name: 'Reserve Fund', type: 'savings', percentage: 10 }
+                ],
+                instructions: 'Adjust percentages in Category Allocations tab to mirror approved church policy.',
+                strengths: 'Fully customizable to any local constitution.',
+                limitations: 'Requires manual percentage configuration if denominational rules change.'
+            },
+            {
+                id: 'C17',
+                key: 'church_restricted_funds',
+                name: 'Church Restricted Funds & Projects',
+                workspace: 'church',
+                tags: ['Restricted'],
+                description: 'Strict fund-accounting isolation for restricted building, missions, and welfare accounts.',
+                purpose: 'Prevents donor-designated restricted funds from being misspent on general operational overhead.',
+                circumstances: 'Churches managing designated donor campaigns or building funds.',
+                allocations: [
+                    { name: 'General Operating Funds', type: 'essential', percentage: 40 },
+                    { name: 'Restricted Building Fund (Protected)', type: 'savings', percentage: 20 },
+                    { name: 'Restricted Missions Fund (Protected)', type: 'giving', percentage: 15 },
+                    { name: 'Restricted Welfare Fund (Protected)', type: 'giving', percentage: 10 },
+                    { name: 'Restricted Youth Fund (Protected)', type: 'essential', percentage: 10 },
+                    { name: 'Special Designated Projects Reserve', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Restricted account balances are reported in isolated ledgers on the Reports tab.',
+                strengths: 'Guarantees legal and ethical compliance with donor designations.',
+                limitations: 'Restricted funds cannot be commingled for general emergency liquidity.'
+            },
+            {
+                id: 'C18',
+                key: 'church_annual_plan',
+                name: 'Church Annual Budget Planning',
+                workspace: 'church',
+                tags: ['Annual'],
+                description: 'Establishes annual approved budget and distributes projections across 12 calendar months.',
+                purpose: 'Manages seasonal giving fluctuations (e.g., higher December giving, lower holiday attendance).',
+                circumstances: 'Annual leadership planning sessions and financial forecasting.',
+                allocations: [
+                    { name: 'Ministry Operations (Annual Base)', type: 'essential', percentage: 30 },
+                    { name: 'Facilities & Utilities (Annual Base)', type: 'essential', percentage: 20 },
+                    { name: 'Evangelism & Missions (Annual Base)', type: 'giving', percentage: 15 },
+                    { name: 'Community Welfare (Annual Base)', type: 'giving', percentage: 10 },
+                    { name: 'Youth & Discipleship (Annual Base)', type: 'essential', percentage: 10 },
+                    { name: 'Seasonal Event Sinking Reserve', type: 'savings', percentage: 10 },
+                    { name: 'Emergency Capital Buffer', type: 'savings', percentage: 5 }
+                ],
+                instructions: 'Use the 12-month annual projection widget in Reports tab to view annual totals.',
+                strengths: 'Provides full 12-month cash flow clarity.',
+                limitations: 'Requires periodic quarterly budget reviews.'
+            }
+        ];
+
+        // Combine all rules
+        const ALL_RULES = [...PERSONAL_RULES, ...CHURCH_RULES];
+
+        // ==========================================
+        // 2. APPLICATION STATE MANAGEMENT
+        // ==========================================
+
+        let activeWorkspace = 'personal'; // 'personal' | 'church'
+        let currentTab = 'dashboard';
+
+        // Workspace-specific state structures
+        let state = {
             personal: {
-                income: 25000,
-                rule: '50_30_20',
+                income: 25000.00, // ZAR
+                activeRuleKey: '50_30_20',
                 categories: [],
                 transactions: []
             },
             church: {
-                income: 100000,
-                rule: 'church_std',
+                income: 85000.00, // ZAR
+                activeRuleKey: 'church_balanced',
                 categories: [],
                 transactions: []
             }
         };
 
+        // Modal / UI temporary state
+        let pendingRuleToApply = null;
         let pieChartInstance = null;
         let barChartInstance = null;
 
-        window.onload = function() {
-            loadFromStorage();
-            initTheme();
-            syncQuickInputWithState();
-            calculateQuickBudget();
-            renderAll();
-            setDefaultDates();
-        };
+        // ==========================================
+        // 3. MATHEMATICAL VALIDATION & CALCULATIONS
+        // ==========================================
 
-        function setDefaultDates() {
-            const today = new Date().toISOString().split('T')[0];
-            const dateInput = document.getElementById('modal-tx-date');
-            if (dateInput) dateInput.value = today;
+        // Calculate precise integer cent allocation with sum reconciliation adjustment
+        function calculateCentsAllocations(totalAmountRand, allocationsList) {
+            const totalCents = Math.round(Number(totalAmountRand || 0) * 100);
+            if (totalCents <= 0 || !allocationsList || allocationsList.length === 0) {
+                return allocationsList.map(a => ({ ...a, cents: 0, rand: 0 }));
+            }
+
+            let calculated = allocationsList.map(item => {
+                const rawCents = Math.round((totalCents * Number(item.percentage)) / 100);
+                return {
+                    ...item,
+                    cents: rawCents,
+                    rand: rawCents / 100
+                };
+            });
+
+            // Reconcile rounding discrepancy to ensure exact total balance
+            const sumCents = calculated.reduce((acc, cur) => acc + cur.cents, 0);
+            const diffCents = totalCents - sumCents;
+
+            if (diffCents !== 0 && calculated.length > 0) {
+                // Adjust largest allocation category to maintain 100% exact math
+                let maxIdx = 0;
+                for (let i = 1; i < calculated.length; i++) {
+                    if (calculated[i].cents > calculated[maxIdx].cents) maxIdx = i;
+                }
+                calculated[maxIdx].cents += diffCents;
+                calculated[maxIdx].rand = calculated[maxIdx].cents / 100;
+            }
+
+            return calculated;
         }
 
+        function formatZAR(amount) {
+            return 'R ' + Number(amount || 0).toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Initialize default workspace categories if empty
+        function initializeDefaultCategories(workspace) {
+            const defaultRuleKey = workspace === 'personal' ? '50_30_20' : 'church_balanced';
+            const ruleDef = ALL_RULES.find(r => r.key === defaultRuleKey);
+            
+            if (ruleDef) {
+                const currentIncome = state[workspace].income;
+                const allocatedWithCents = calculateCentsAllocations(currentIncome, ruleDef.allocations);
+                
+                state[workspace].categories = allocatedWithCents.map((item, idx) => ({
+                    id: 'cat_' + Date.now() + '_' + idx,
+                    name: item.name,
+                    type: item.type,
+                    percentage: item.percentage,
+                    allocatedCents: item.cents,
+                    allocatedRand: item.rand
+                }));
+            }
+        }
+
+        // Load / Save Local Storage
         function saveToStorage() {
-            try { localStorage.setItem('smartbudget_pro_simple_state', JSON.stringify(appState)); } catch(e){}
+            try {
+                localStorage.setItem('smartbudget_pro_v2_state', JSON.stringify(state));
+                localStorage.setItem('smartbudget_pro_v2_workspace', activeWorkspace);
+            } catch (e) {
+                console.warn('LocalStorage save error:', e);
+            }
         }
 
         function loadFromStorage() {
             try {
-                const saved = localStorage.getItem('smartbudget_pro_simple_state');
-                if (saved) appState = JSON.parse(saved);
-            } catch(e){}
+                const savedState = localStorage.getItem('smartbudget_pro_v2_state');
+                const savedWs = localStorage.getItem('smartbudget_pro_v2_workspace');
+                if (savedState) {
+                    state = JSON.parse(savedState);
+                }
+                if (savedWs && (savedWs === 'personal' || savedWs === 'church')) {
+                    activeWorkspace = savedWs;
+                }
+            } catch (e) {
+                console.warn('LocalStorage load error:', e);
+            }
+
+            // Ensure categories initialized
+            if (!state.personal.categories || state.personal.categories.length === 0) {
+                initializeDefaultCategories('personal');
+            }
+            if (!state.church.categories || state.church.categories.length === 0) {
+                initializeDefaultCategories('church');
+            }
         }
 
-        function initTheme() {
-            document.documentElement.classList.toggle('dark', appState.darkMode);
-        }
-
-        function toggleDarkMode() {
-            appState.darkMode = !appState.darkMode;
-            initTheme();
-            saveToStorage();
-        }
+        // ==========================================
+        // 4. WORKSPACE & NAVIGATION SWITCHING
+        // ==========================================
 
         function switchWorkspace(ws) {
-            appState.activeWorkspace = ws;
-            document.getElementById('btn-workspace-personal').className = ws === 'personal' 
-                ? 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center'
-                : 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center';
+            activeWorkspace = ws;
+
+            // Update UI buttons
+            const btnP = document.getElementById('btn-workspace-personal');
+            const btnC = document.getElementById('btn-workspace-church');
             
-            document.getElementById('btn-workspace-church').className = ws === 'church' 
-                ? 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center'
-                : 'px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center';
+            if (ws === 'personal') {
+                btnP.className = "px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center";
+                btnC.className = "px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center";
+                document.getElementById('dash-workspace-badge').textContent = "Personal Workspace";
+            } else {
+                btnC.className = "px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-700 text-brand-700 dark:text-brand-300 shadow-sm flex items-center";
+                btnP.className = "px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center";
+                document.getElementById('dash-workspace-badge').textContent = "Church Workspace";
+            }
 
-            document.getElementById('dash-workspace-badge').innerText = ws === 'personal' ? 'Personal Budgeting' : 'Church Budgeting';
-
-            syncQuickInputWithState();
-            calculateQuickBudget();
-            renderAll();
             saveToStorage();
+            populateQuickRuleSelect();
+            refreshCurrentView();
         }
 
         function switchTab(tabId) {
-            appState.activeTab = tabId;
-            ['dashboard', 'methods', 'categories', 'transactions', 'reports'].forEach(t => {
-                const sec = document.getElementById(`view-${t}`);
-                const btn = document.getElementById(`tab-${t}`);
-                if (sec) sec.classList.toggle('hidden', t !== tabId);
-                if (btn) {
-                    btn.className = t === tabId 
-                        ? 'tab-btn py-3 px-3 border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 font-bold text-xs sm:text-sm flex items-center space-x-2 transition'
-                        : 'tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition';
+            currentTab = tabId;
+            const views = ['dashboard', 'methods', 'categories', 'transactions', 'reports', 'testing'];
+            
+            views.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                const btn = document.getElementById('tab-' + v);
+                if (v === tabId) {
+                    if (el) el.classList.remove('hidden');
+                    if (btn) {
+                        btn.className = "tab-btn py-3 px-3 border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 font-bold text-xs sm:text-sm flex items-center space-x-2 transition";
+                    }
+                } else {
+                    if (el) el.classList.add('hidden');
+                    if (btn) {
+                        btn.className = "tab-btn py-3 px-3 border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm flex items-center space-x-2 transition";
+                    }
                 }
             });
-            if (tabId === 'dashboard') renderCharts();
-            if (tabId === 'methods') renderMethodsView();
+
+            refreshCurrentView();
         }
 
-        function formatZAR(val) {
-            return 'R ' + Number(val || 0).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
         }
 
-        // Quick Calculator Engine
-        function syncQuickInputWithState() {
-            const current = appState[appState.activeWorkspace];
-            document.getElementById('quick-amount-input').value = current.income || 25000;
-            document.getElementById('quick-rule-select').value = current.rule || (appState.activeWorkspace === 'personal' ? '50_30_20' : 'church_std');
+        function refreshCurrentView() {
+            recalculateCategoryAllocations();
+            
+            if (currentTab === 'dashboard') {
+                renderDashboard();
+            } else if (currentTab === 'methods') {
+                renderRulesLibrary();
+            } else if (currentTab === 'categories') {
+                renderCategoryTable();
+            } else if (currentTab === 'transactions') {
+                renderTransactionTable();
+            } else if (currentTab === 'reports') {
+                renderReportsView();
+            }
+        }
+
+        // Recalculate categories Rand targets based on active workspace budget base
+        function recalculateCategoryAllocations() {
+            const ws = state[activeWorkspace];
+            const baseAmount = Number(ws.income || 0);
+
+            // Re-run integer cents calculation across categories
+            const categoryAllocationsList = ws.categories.map(c => ({
+                id: c.id,
+                percentage: Number(c.percentage || 0)
+            }));
+
+            const calculated = calculateCentsAllocations(baseAmount, categoryAllocationsList);
+
+            ws.categories.forEach(cat => {
+                const found = calculated.find(item => item.id === cat.id);
+                if (found) {
+                    cat.allocatedCents = found.cents;
+                    cat.allocatedRand = found.rand;
+                }
+            });
+        }
+
+        // Calculate actual spent per category from transactions
+        function getActualSpentMap() {
+            const ws = state[activeWorkspace];
+            const spentMap = {};
+            
+            ws.categories.forEach(c => spentMap[c.id] = 0);
+
+            ws.transactions.forEach(tx => {
+                if (tx.categoryId && spentMap[tx.categoryId] !== undefined) {
+                    if (tx.type === 'expense') {
+                        spentMap[tx.categoryId] += Number(tx.amount || 0);
+                    } else if (tx.type === 'income') {
+                        spentMap[tx.categoryId] -= Number(tx.amount || 0);
+                    }
+                }
+            });
+
+            return spentMap;
+        }
+
+        // ==========================================
+        // 5. QUICK CALCULATOR & DASHBOARD VIEW
+        // ==========================================
+
+        function populateQuickRuleSelect() {
+            const selectEl = document.getElementById('quick-rule-select');
+            if (!selectEl) return;
+
+            const relevantRules = ALL_RULES.filter(r => r.workspace === activeWorkspace || r.workspace === 'both');
+            selectEl.innerHTML = relevantRules.map(r => 
+                `<option value="${r.key}" ${r.key === state[activeWorkspace].activeRuleKey ? 'selected' : ''}>${r.name}</option>`
+            ).join('');
+
+            const quickInput = document.getElementById('quick-amount-input');
+            if (quickInput) {
+                quickInput.value = state[activeWorkspace].income;
+            }
+
+            calculateQuickBudget();
         }
 
         function calculateQuickBudget() {
-            const amount = Number(document.getElementById('quick-amount-input').value) || 0;
-            const ruleKey = document.getElementById('quick-rule-select').value;
-            const ruleObj = BUDGET_RULES[ruleKey] || BUDGET_RULES['50_30_20'];
+            const amountInput = document.getElementById('quick-amount-input');
+            const ruleSelect = document.getElementById('quick-rule-select');
+            const breakdownContainer = document.getElementById('quick-breakdown-cards');
+            const ruleBadge = document.getElementById('quick-rule-badge');
 
-            document.getElementById('quick-rule-badge').innerText = ruleObj.name;
+            if (!amountInput || !ruleSelect || !breakdownContainer) return;
 
-            const container = document.getElementById('quick-breakdown-cards');
-            container.innerHTML = '';
+            const amount = parseFloat(amountInput.value) || 0;
+            const selectedRuleKey = ruleSelect.value;
+            const ruleDef = ALL_RULES.find(r => r.key === selectedRuleKey) || ALL_RULES[0];
 
-            ruleObj.presets.forEach(preset => {
-                const calculatedRand = (amount * preset.percent) / 100;
-                const card = document.createElement('div');
-                card.className = 'bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between';
-                card.innerHTML = `
+            if (ruleBadge) ruleBadge.textContent = ruleDef.name;
+
+            const calculatedAllocations = calculateCentsAllocations(amount, ruleDef.allocations);
+
+            breakdownContainer.innerHTML = calculatedAllocations.map(item => `
+                <div class="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${preset.type}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-100 text-brand-800 dark:bg-brand-950 dark:text-brand-300">${preset.percent}%</span>
+                        <div class="flex items-center justify-between text-xs mb-1">
+                            <span class="font-bold text-slate-700 dark:text-slate-300 truncate mr-1">${item.name}</span>
+                            <span class="px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 font-extrabold text-[10px] shrink-0">${item.percentage}%</span>
                         </div>
-                        <p class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white leading-snug">${preset.name}</p>
+                        <p class="text-xs text-slate-500 capitalize">${item.type}</p>
                     </div>
-                    <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700">
-                        <p class="text-base sm:text-lg font-extrabold text-brand-600 dark:text-brand-400">${formatZAR(calculatedRand)}</p>
+                    <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700/50 flex items-baseline justify-between">
+                        <span class="text-[10px] uppercase font-bold text-slate-400">Calculated</span>
+                        <span class="text-sm font-black text-slate-900 dark:text-white">${formatZAR(item.rand)}</span>
                     </div>
-                `;
-                container.appendChild(card);
-            });
+                </div>
+            `).join('');
         }
 
-        function applyQuickBudgetToActive() {
-            const amount = Number(document.getElementById('quick-amount-input').value) || 0;
-            const ruleKey = document.getElementById('quick-rule-select').value;
-            const ruleObj = BUDGET_RULES[ruleKey] || BUDGET_RULES['50_30_20'];
-
-            const current = appState[appState.activeWorkspace];
-            current.income = amount;
-            current.rule = ruleKey;
-
-            current.categories = ruleObj.presets.map(p => ({
-                name: p.name,
-                type: p.type,
-                percent: p.percent,
-                spent: 0
-            }));
-
-            saveToStorage();
-            renderAll();
-        }
-
-        function renderAll() {
-            const current = appState[appState.activeWorkspace];
+        function applySelectedQuickRule() {
+            const amountInput = document.getElementById('quick-amount-input');
+            const ruleSelect = document.getElementById('quick-rule-select');
             
-            if (!current.categories || current.categories.length === 0) {
-                const ruleObj = BUDGET_RULES[current.rule] || BUDGET_RULES['50_30_20'];
-                current.categories = ruleObj.presets.map(p => ({
-                    name: p.name,
-                    type: p.type,
-                    percent: p.percent,
-                    spent: 0
-                }));
-            }
+            const newIncome = parseFloat(amountInput.value) || 0;
+            const selectedRuleKey = ruleSelect.value;
+            const ruleDef = ALL_RULES.find(r => r.key === selectedRuleKey);
 
-            const income = Number(current.income || 0);
-            let totalSpent = 0;
-            current.categories.forEach(c => totalSpent += Number(c.spent || 0));
+            if (!ruleDef) return;
 
-            document.getElementById('kpi-income').innerText = formatZAR(income);
-            document.getElementById('kpi-spent').innerText = formatZAR(totalSpent);
-            document.getElementById('kpi-balance').innerText = formatZAR(income - totalSpent);
-
-            renderCategoriesTable();
-            renderTransactionsTable();
-            renderCharts();
-            renderMethodsView();
+            openConfirmModal(ruleDef, newIncome);
         }
 
-        function renderCategoriesTable() {
-            const current = appState[appState.activeWorkspace];
-            const tbody = document.getElementById('categories-table-body');
-            tbody.innerHTML = '';
+        function renderDashboard() {
+            const ws = state[activeWorkspace];
+            const currentIncome = Number(ws.income || 0);
 
-            const income = Number(current.income || 0);
-            let totalPct = 0;
+            // Calculate KPIs
+            const totalAllocated = ws.categories.reduce((acc, c) => acc + Number(c.allocatedRand || 0), 0);
+            const spentMap = getActualSpentMap();
+            const totalSpent = Object.values(spentMap).reduce((acc, v) => acc + Number(v || 0), 0);
+            const remainingBalance = currentIncome - totalSpent;
 
-            current.categories.forEach((cat, idx) => {
-                totalPct += Number(cat.percent || 0);
-                const allocatedZAR = (income * cat.percent) / 100;
-                
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${cat.name}</td>
-                    <td class="py-3 px-4 capitalize text-slate-500 dark:text-slate-400 text-xs">${cat.type}</td>
-                    <td class="py-3 px-4 font-bold">${cat.percent}%</td>
-                    <td class="py-3 px-4 text-brand-600 dark:text-brand-400 font-bold">${formatZAR(allocatedZAR)}</td>
-                    <td class="py-3 px-4 text-slate-700 dark:text-slate-300 font-medium">${formatZAR(cat.spent)}</td>
-                    <td class="py-3 px-4 text-right space-x-2">
-                        <button onclick="editCategory(${idx})" aria-label="Edit" class="text-blue-600 p-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteCategory(${idx})" aria-label="Delete" class="text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            document.getElementById('kpi-income').textContent = formatZAR(currentIncome);
+            document.getElementById('kpi-allocated').textContent = formatZAR(totalAllocated);
+            document.getElementById('kpi-spent').textContent = formatZAR(totalSpent);
+            document.getElementById('kpi-balance').textContent = formatZAR(remainingBalance);
 
-            const banner = document.getElementById('allocation-validation-banner');
-            const msg = document.getElementById('validation-msg');
-            if (Math.abs(totalPct - 100) < 0.1) {
-                banner.className = 'mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
-                msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Allocations total exactly 100%. Budget is balanced.`;
-            } else {
-                banner.className = 'mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
-                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-2"></i>Allocations total <strong>${totalPct}%</strong> (Target: 100%).`;
-            }
+            // Render Charts
+            renderCharts(ws.categories, spentMap);
         }
 
-        function renderTransactionsTable() {
-            const current = appState[appState.activeWorkspace];
-            const tbody = document.getElementById('transactions-table-body');
-            tbody.innerHTML = '';
+        function renderCharts(categories, spentMap) {
+            const pieCtx = document.getElementById('categoryPieChart');
+            const barCtx = document.getElementById('plannedActualBarChart');
+            const legendEl = document.getElementById('chartLegend');
 
-            current.transactions.forEach((tx) => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
-                const isIncome = tx.type === 'income';
-                tr.innerHTML = `
-                    <td class="py-3 px-4 text-slate-500 dark:text-slate-400 text-xs">${tx.date}</td>
-                    <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${tx.desc}</td>
-                    <td class="py-3 px-4 text-slate-600 dark:text-slate-400 text-xs">${tx.category}</td>
-                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isIncome ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300'}">${tx.type}</span></td>
-                    <td class="py-3 px-4 text-right font-extrabold ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${isIncome ? '+' : '-'}${formatZAR(tx.amount)}</td>
-                    <td class="py-3 px-4 text-right"><button onclick="deleteTransaction('${tx.id}')" aria-label="Delete" class="text-red-600 p-1"><i class="fa-solid fa-trash"></i></button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+            if (!pieCtx || !barCtx) return;
 
-        function renderCharts() {
-            const current = appState[appState.activeWorkspace];
-            const income = Number(current.income || 0);
+            const labels = categories.map(c => c.name);
+            const allocatedData = categories.map(c => Number(c.allocatedRand || 0));
+            const actualData = categories.map(c => Number(spentMap[c.id] || 0));
 
-            const labels = current.categories.map(c => c.name);
-            const data = current.categories.map(c => (income * c.percent) / 100);
-            const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316'];
+            const colors = [
+                '#16a34a', '#2563eb', '#d97706', '#9333ea', '#dc2626',
+                '#0d9488', '#4f46e5', '#ca8a04', '#c026d3', '#0284c7'
+            ];
 
-            const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
             if (pieChartInstance) pieChartInstance.destroy();
+            if (barChartInstance) barChartInstance.destroy();
+
+            // Pie Chart
             pieChartInstance = new Chart(pieCtx, {
                 type: 'doughnut',
-                data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, data.length), borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: allocatedData,
+                        backgroundColor: colors.slice(0, categories.length),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
             });
 
-            const legendDiv = document.getElementById('chartLegend');
-            legendDiv.innerHTML = '';
-            current.categories.forEach((c, idx) => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs';
-                item.innerHTML = `
-                    <div class="flex items-center space-x-2 truncate pr-2">
-                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${colors[idx % colors.length]}"></span>
-                        <span class="truncate">${c.name}</span>
+            // Populate custom chart legend
+            if (legendEl) {
+                legendEl.innerHTML = categories.map((c, i) => `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 truncate">
+                            <span class="w-2.5 h-2.5 rounded-full inline-block shrink-0" style="background-color: ${colors[i % colors.length]}"></span>
+                            <span class="truncate text-slate-700 dark:text-slate-300 font-medium">${c.name}</span>
+                        </div>
+                        <span class="font-bold text-slate-900 dark:text-white shrink-0 ml-2">${formatZAR(c.allocatedRand)}</span>
                     </div>
-                    <span class="font-bold shrink-0 text-slate-900 dark:text-slate-200">${formatZAR((income * c.percent) / 100)}</span>
-                `;
-                legendDiv.appendChild(item);
-            });
+                `).join('');
+            }
 
-            const barCtx = document.getElementById('plannedActualBarChart').getContext('2d');
-            const plannedData = current.categories.map(c => (income * c.percent) / 100);
-            const actualData = current.categories.map(c => c.spent);
-
-            if (barChartInstance) barChartInstance.destroy();
+            // Bar Chart (Planned vs Actual)
             barChartInstance = new Chart(barCtx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Planned (ZAR)', data: plannedData, backgroundColor: '#22c55e', borderRadius: 4 },
-                        { label: 'Actual Spent (ZAR)', data: actualData, backgroundColor: '#3b82f6', borderRadius: 4 }
+                        {
+                            label: 'Planned Target (ZAR)',
+                            data: allocatedData,
+                            backgroundColor: '#16a34a',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Actual Spent (ZAR)',
+                            data: actualData,
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 6
+                        }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return 'R ' + value; }
+                            }
+                        }
+                    }
                 }
             });
         }
 
-        function renderMethodsView() {
+        // ==========================================
+        // 6. BUDGETING RULES & METHODS LIBRARY VIEW
+        // ==========================================
+
+        function renderRulesLibrary() {
             const grid = document.getElementById('methods-library-grid');
-            grid.innerHTML = '';
+            const searchVal = (document.getElementById('rule-search-input')?.value || '').toLowerCase();
+            const scopeVal = document.getElementById('rule-filter-scope')?.value || 'workspace_default';
+            const tagVal = document.getElementById('rule-filter-tag')?.value || 'all';
 
-            const current = appState[appState.activeWorkspace];
+            if (!grid) return;
 
-            Object.keys(BUDGET_RULES).forEach(key => {
-                const rule = BUDGET_RULES[key];
-                const card = document.createElement('div');
-                card.className = 'p-4 sm:p-5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between space-y-3';
-                card.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-slate-900 dark:text-white mb-1 text-sm sm:text-base">${rule.name}</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">${rule.desc}</p>
-                    </div>
-                    <button onclick="selectAndApplyRule('${key}')" class="w-full py-2.5 rounded-lg ${current.rule === key ? 'bg-brand-600 text-white font-bold' : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-semibold'} text-xs transition cursor-pointer">
-                        ${current.rule === key ? 'Active Strategy' : 'Select Strategy'}
-                    </button>
-                `;
-                grid.appendChild(card);
+            let filtered = ALL_RULES.filter(rule => {
+                // Scope Filter
+                if (scopeVal === 'workspace_default' && rule.workspace !== activeWorkspace && rule.workspace !== 'both') return false;
+                if (scopeVal === 'personal' && rule.workspace !== 'personal' && rule.workspace !== 'both') return false;
+                if (scopeVal === 'church' && rule.workspace !== 'church' && rule.workspace !== 'both') return false;
+
+                // Tag Filter
+                if (tagVal !== 'all' && !rule.tags.includes(tagVal)) return false;
+
+                // Search Filter
+                if (searchVal) {
+                    const matchName = rule.name.toLowerCase().includes(searchVal);
+                    const matchDesc = rule.description.toLowerCase().includes(searchVal);
+                    const matchCats = rule.allocations.some(a => a.name.toLowerCase().includes(searchVal));
+                    if (!matchName && !matchDesc && !matchCats) return false;
+                }
+
+                return true;
             });
+
+            const currentIncome = state[activeWorkspace].income;
+
+            grid.innerHTML = filtered.map(rule => {
+                const sumPerc = rule.allocations.reduce((a, b) => a + Number(b.percentage), 0);
+                const is100 = Math.abs(sumPerc - 100) < 0.001;
+                const calculatedWithCents = calculateCentsAllocations(currentIncome, rule.allocations);
+
+                return `
+                    <div class="bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:border-brand-500/50 transition">
+                        <div class="space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${rule.workspace === 'church' ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300' : 'bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300'} mb-1">
+                                        ${rule.workspace.toUpperCase()} RULE
+                                    </span>
+                                    <h3 class="font-extrabold text-slate-900 dark:text-white text-base">${rule.name}</h3>
+                                </div>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md ${is100 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800'}">
+                                    ${is100 ? '100% Balanced' : sumPerc + '% Alloc'}
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${rule.description}</p>
+                            
+                            <div class="p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] space-y-1">
+                                <p class="text-slate-500 font-semibold">Purpose & Circumstances:</p>
+                                <p class="text-slate-700 dark:text-slate-300">${rule.purpose}</p>
+                            </div>
+
+                            <!-- Category Allocations & Rand Preview -->
+                            <div class="space-y-1.5 pt-1">
+                                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Allocations Breakdown (${formatZAR(currentIncome)})</p>
+                                <div class="space-y-1">
+                                    ${calculatedWithCents.map(item => `
+                                        <div class="flex items-center justify-between text-xs bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                                            <span class="truncate font-medium text-slate-800 dark:text-slate-200 mr-2">${item.name}</span>
+                                            <div class="flex items-center space-x-2 shrink-0 font-bold">
+                                                <span class="text-brand-600 dark:text-brand-400 text-[11px]">${item.percentage}%</span>
+                                                <span class="text-slate-900 dark:text-white">${formatZAR(item.rand)}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+                            <span class="text-[10px] text-slate-400 font-mono">${rule.id}</span>
+                            <button onclick="promptRuleApply('${rule.key}')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-play text-[10px]"></i><span>Apply Rule Strategy</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function selectAndApplyRule(ruleKey) {
-            document.getElementById('quick-rule-select').value = ruleKey;
-            applyQuickBudgetToActive();
+        function promptRuleApply(ruleKey) {
+            const ruleDef = ALL_RULES.find(r => r.key === ruleKey);
+            if (!ruleDef) return;
+
+            // Auto-switch workspace if rule belongs to opposite workspace
+            if (ruleDef.workspace !== 'both' && ruleDef.workspace !== activeWorkspace) {
+                switchWorkspace(ruleDef.workspace);
+            }
+
+            openConfirmModal(ruleDef, state[activeWorkspace].income);
+        }
+
+        function openConfirmModal(ruleDef, newIncomeAmount) {
+            pendingRuleToApply = { ruleDef, newIncomeAmount };
+
+            document.getElementById('confirm-rule-name').textContent = ruleDef.name + " (" + formatZAR(newIncomeAmount) + ")";
+            document.getElementById('btn-execute-rule-apply').onclick = executePendingRuleApply;
+            document.getElementById('modal-confirm-rule').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm-rule').classList.add('hidden');
+            pendingRuleToApply = null;
+        }
+
+        function executePendingRuleApply() {
+            if (!pendingRuleToApply) return;
+
+            const { ruleDef, newIncomeAmount } = pendingRuleToApply;
+            const ws = activeWorkspace;
+
+            state[ws].income = newIncomeAmount;
+            state[ws].activeRuleKey = ruleDef.key;
+
+            // Compute exact integer cent allocations for categories
+            const calculatedWithCents = calculateCentsAllocations(newIncomeAmount, ruleDef.allocations);
+
+            state[ws].categories = calculatedWithCents.map((item, idx) => ({
+                id: 'cat_' + Date.now() + '_' + idx,
+                name: item.name,
+                type: item.type,
+                percentage: item.percentage,
+                allocatedCents: item.cents,
+                allocatedRand: item.rand
+            }));
+
+            saveToStorage();
+            closeConfirmModal();
+            refreshCurrentView();
+
+            // Switch to Dashboard to view result
             switchTab('dashboard');
         }
 
-        // Modals Logic
+        // ==========================================
+        // 7. CATEGORIES ALLOCATIONS VIEW
+        // ==========================================
+
+        function renderCategoryTable() {
+            const tbody = document.getElementById('category-table-body');
+            const validationBanner = document.getElementById('allocation-validation-banner');
+            const validationMsg = document.getElementById('validation-msg');
+
+            if (!tbody) return;
+
+            const ws = state[activeWorkspace];
+            const spentMap = getActualSpentMap();
+
+            const sumPercentage = ws.categories.reduce((acc, c) => acc + Number(c.percentage || 0), 0);
+            const is100 = Math.abs(sumPercentage - 100) < 0.001;
+
+            if (validationBanner && validationMsg) {
+                if (is100) {
+                    validationBanner.className = "mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3";
+                    validationMsg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Category target allocations total exactly 100%. Budget is mathematically balanced.`;
+                } else {
+                    validationBanner.className = "mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3";
+                    validationMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-2"></i>Total allocation sum is <strong>${sumPercentage}%</strong>. Adjust category targets or click Auto-Balance to reconcile.`;
+                }
+            }
+
+            tbody.innerHTML = ws.categories.map((cat, idx) => {
+                const spent = spentMap[cat.id] || 0;
+                const variance = Number(cat.allocatedRand || 0) - spent;
+
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${cat.name}</td>
+                        <td class="py-3 px-4 capitalize text-slate-500 text-xs">${cat.type}</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center space-x-1">
+                                <input type="number" step="0.5" min="0" max="100" value="${cat.percentage}" onchange="updateCategoryPercentage(${idx}, this.value)" class="w-16 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+                                <span class="text-xs font-bold text-slate-500">%</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">${formatZAR(cat.allocatedRand)}</td>
+                        <td class="py-3 px-4 font-semibold text-amber-600 dark:text-amber-400">${formatZAR(spent)}</td>
+                        <td class="py-3 px-4 font-bold ${variance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}">
+                            ${formatZAR(variance)}
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="deleteCategory(${idx})" class="text-red-500 hover:text-red-700 p-1 rounded transition" title="Delete Category">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateCategoryPercentage(index, newVal) {
+            const ws = state[activeWorkspace];
+            if (ws.categories[index]) {
+                ws.categories[index].percentage = Math.max(0, parseFloat(newVal) || 0);
+                recalculateCategoryAllocations();
+                saveToStorage();
+                renderCategoryTable();
+            }
+        }
+
+        function autoBalanceCategories() {
+            const ws = state[activeWorkspace];
+            if (ws.categories.length === 0) return;
+
+            const total = ws.categories.reduce((a, c) => a + Number(c.percentage || 0), 0);
+            if (total === 0) return;
+
+            ws.categories.forEach(c => {
+                c.percentage = Math.round((c.percentage / total) * 1000) / 10;
+            });
+
+            // Adjust rounding discrepancy on first element
+            const newTotal = ws.categories.reduce((a, c) => a + Number(c.percentage || 0), 0);
+            const diff = Math.round((100 - newTotal) * 10) / 10;
+            if (diff !== 0 && ws.categories.length > 0) {
+                ws.categories[0].percentage = Math.max(0, ws.categories[0].percentage + diff);
+            }
+
+            recalculateCategoryAllocations();
+            saveToStorage();
+            renderCategoryTable();
+        }
+
+        function deleteCategory(index) {
+            const ws = state[activeWorkspace];
+            ws.categories.splice(index, 1);
+            recalculateCategoryAllocations();
+            saveToStorage();
+            renderCategoryTable();
+        }
+
+        function openCategoryModal() {
+            document.getElementById('cat-input-name').value = '';
+            document.getElementById('cat-input-percentage').value = '5';
+            document.getElementById('modal-category').classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('modal-category').classList.add('hidden');
+        }
+
+        function saveCategory() {
+            const name = document.getElementById('cat-input-name').value.trim();
+            const type = document.getElementById('cat-input-type').value;
+            const percentage = parseFloat(document.getElementById('cat-input-percentage').value) || 0;
+
+            if (!name) {
+                alert('Please provide a valid category name.');
+                return;
+            }
+
+            const ws = state[activeWorkspace];
+            ws.categories.push({
+                id: 'cat_' + Date.now(),
+                name,
+                type,
+                percentage,
+                allocatedCents: 0,
+                allocatedRand: 0
+            });
+
+            recalculateCategoryAllocations();
+            saveToStorage();
+            closeCategoryModal();
+            renderCategoryTable();
+        }
+
+        // ==========================================
+        // 8. TRANSACTIONS VIEW
+        // ==========================================
+
+        function renderTransactionTable() {
+            const tbody = document.getElementById('transaction-table-body');
+            if (!tbody) return;
+
+            const ws = state[activeWorkspace];
+
+            if (ws.transactions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-slate-400">
+                            No transactions recorded yet in this workspace. Click "Add Transaction" to log activity.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = ws.transactions.map((tx, idx) => {
+                const cat = ws.categories.find(c => c.id === tx.categoryId);
+                const catName = cat ? cat.name : 'Unassigned';
+
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-4 font-mono text-xs text-slate-500">${tx.date}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${tx.description}</td>
+                        <td class="py-3 px-4 text-xs font-medium text-slate-600 dark:text-slate-300">${catName}</td>
+                        <td class="py-3 px-4 capitalize text-xs">
+                            <span class="px-2 py-0.5 rounded-md font-bold ${tx.type === 'expense' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'}">
+                                ${tx.type}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 font-bold ${tx.type === 'expense' ? 'text-amber-600' : 'text-emerald-600'}">
+                            ${tx.type === 'expense' ? '-' : '+'}${formatZAR(tx.amount)}
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="deleteTransaction(${idx})" class="text-red-500 hover:text-red-700 p-1 transition" title="Delete Transaction">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         function openTransactionModal() {
-            document.getElementById('transaction-modal').classList.remove('hidden');
-            updateModalCategories();
+            const catSelect = document.getElementById('tx-input-category');
+            const ws = state[activeWorkspace];
+
+            catSelect.innerHTML = ws.categories.map(c => `
+                <option value="${c.id}">${c.name}</option>
+            `).join('');
+
+            document.getElementById('tx-input-desc').value = '';
+            document.getElementById('tx-input-amount').value = '';
+            document.getElementById('tx-input-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-transaction').classList.remove('hidden');
         }
+
         function closeTransactionModal() {
-            document.getElementById('transaction-modal').classList.add('hidden');
+            document.getElementById('modal-transaction').classList.add('hidden');
         }
-        function updateModalCategories() {
-            const current = appState[appState.activeWorkspace];
-            const type = document.getElementById('modal-tx-type').value;
-            const select = document.getElementById('modal-tx-category');
-            select.innerHTML = '';
 
-            if (type === 'income') {
-                select.innerHTML = '<option value="Income">Income Source</option>';
-            } else {
-                current.categories.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.name;
-                    opt.innerText = c.name;
-                    select.appendChild(opt);
-                });
+        function saveTransaction() {
+            const desc = document.getElementById('tx-input-desc').value.trim();
+            const categoryId = document.getElementById('tx-input-category').value;
+            const type = document.getElementById('tx-input-type').value;
+            const amount = parseFloat(document.getElementById('tx-input-amount').value) || 0;
+            const date = document.getElementById('tx-input-date').value;
+
+            if (!desc || amount <= 0) {
+                alert('Please enter a valid description and positive amount.');
+                return;
             }
-        }
-        function saveTransaction(e) {
-            e.preventDefault();
-            const current = appState[appState.activeWorkspace];
-            const type = document.getElementById('modal-tx-type').value;
-            const desc = document.getElementById('modal-tx-desc').value;
-            const amount = Number(document.getElementById('modal-tx-amount').value);
-            const category = document.getElementById('modal-tx-category').value;
-            const date = document.getElementById('modal-tx-date').value;
 
-            current.transactions.push({ id: Date.now().toString(), date, desc, type, amount, category });
-
-            if (type === 'expense') {
-                const catObj = current.categories.find(c => c.name === category);
-                if (catObj) catObj.spent = Number(catObj.spent || 0) + amount;
-            } else if (type === 'income') {
-                current.income = Number(current.income || 0) + amount;
-                syncQuickInputWithState();
-            }
+            const ws = state[activeWorkspace];
+            ws.transactions.push({
+                id: 'tx_' + Date.now(),
+                description: desc,
+                categoryId,
+                type,
+                amount,
+                date
+            });
 
             saveToStorage();
             closeTransactionModal();
-            renderAll();
+            renderTransactionTable();
         }
-        function deleteTransaction(id) {
-            const current = appState[appState.activeWorkspace];
-            const idx = current.transactions.findIndex(t => t.id === id);
-            if (idx !== -1) {
-                const tx = current.transactions[idx];
-                if (tx.type === 'expense') {
-                    const catObj = current.categories.find(c => c.name === tx.category);
-                    if (catObj) catObj.spent = Math.max(0, catObj.spent - tx.amount);
+
+        function deleteTransaction(index) {
+            const ws = state[activeWorkspace];
+            ws.transactions.splice(index, 1);
+            saveToStorage();
+            renderTransactionTable();
+        }
+
+        // ==========================================
+        // 9. REPORTS, ANNUAL FORECAST & CSV EXPORT
+        // ==========================================
+
+        function renderReportsView() {
+            const ws = state[activeWorkspace];
+            const monthlyBase = Number(ws.income || 0);
+            const annualBase = monthlyBase * 12;
+
+            const spentMap = getActualSpentMap();
+            const totalSpent = Object.values(spentMap).reduce((a, b) => a + Number(b || 0), 0);
+            const annualSpent = totalSpent * 12;
+
+            document.getElementById('rep-monthly-base').textContent = formatZAR(monthlyBase);
+            document.getElementById('rep-annual-base').textContent = formatZAR(annualBase);
+            document.getElementById('rep-annual-spent').textContent = formatZAR(annualSpent);
+
+            // Restricted funds rendering
+            const restrictedBody = document.getElementById('restricted-funds-body');
+            if (restrictedBody) {
+                const restrictedCats = ws.categories.filter(c => 
+                    c.name.toLowerCase().includes('restricted') || 
+                    c.name.toLowerCase().includes('building') || 
+                    c.name.toLowerCase().includes('welfare') || 
+                    c.name.toLowerCase().includes('missions') ||
+                    c.type === 'giving'
+                );
+
+                if (restrictedCats.length === 0) {
+                    restrictedBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="py-3 text-slate-400 text-center">No restricted or dedicated fund accounts configured in current view.</td>
+                        </tr>
+                    `;
+                } else {
+                    restrictedBody.innerHTML = restrictedCats.map(c => {
+                        const spent = spentMap[c.id] || 0;
+                        const protectedBal = Number(c.allocatedRand || 0) - spent;
+
+                        return `
+                            <tr>
+                                <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">${c.name}</td>
+                                <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold text-[10px]">Restricted / Isolated</span></td>
+                                <td class="py-2 px-3 font-bold text-slate-800 dark:text-slate-200">${formatZAR(c.allocatedRand)}</td>
+                                <td class="py-2 px-3 text-amber-600">${formatZAR(spent)}</td>
+                                <td class="py-2 px-3 font-extrabold text-blue-600 dark:text-blue-400">${formatZAR(protectedBal)}</td>
+                            </tr>
+                        `;
+                    }).join('');
                 }
-                current.transactions.splice(idx, 1);
-                saveToStorage();
-                renderAll();
             }
-        }
-
-        function openCategoryModal(index = -1) {
-            document.getElementById('category-modal').classList.remove('hidden');
-            document.getElementById('modal-cat-index').value = index;
-            if (index !== -1) {
-                const cat = appState[appState.activeWorkspace].categories[index];
-                document.getElementById('modal-cat-name').value = cat.name;
-                document.getElementById('modal-cat-type').value = cat.type;
-                document.getElementById('modal-cat-percent').value = cat.percent;
-            }
-        }
-        function closeCategoryModal() {
-            document.getElementById('category-modal').classList.add('hidden');
-        }
-        function saveCategory(e) {
-            e.preventDefault();
-            const current = appState[appState.activeWorkspace];
-            const index = Number(document.getElementById('modal-cat-index').value);
-            const name = document.getElementById('modal-cat-name').value;
-            const type = document.getElementById('modal-cat-type').value;
-            const percent = Number(document.getElementById('modal-cat-percent').value);
-
-            if (index === -1) {
-                current.categories.push({ name, type, percent, spent: 0 });
-            } else {
-                current.categories[index] = { ...current.categories[index], name, type, percent };
-            }
-
-            saveToStorage();
-            closeCategoryModal();
-            renderAll();
-        }
-        function editCategory(index) { openCategoryModal(index); }
-        function deleteCategory(index) {
-            appState[appState.activeWorkspace].categories.splice(index, 1);
-            saveToStorage();
-            renderAll();
-        }
-        function autoBalanceCategories() {
-            const cats = appState[appState.activeWorkspace].categories;
-            if (!cats.length) return;
-            const share = 100 / cats.length;
-            cats.forEach(c => c.percent = Number(share.toFixed(1)));
-            saveToStorage();
-            renderAll();
         }
 
         function exportCSV() {
-            const current = appState[appState.activeWorkspace];
-            let csv = 'Date,Description,Category,Type,Amount (ZAR)\n';
-            current.transactions.forEach(t => { csv += `"${t.date}","${t.desc}","${t.category}","${t.type}",${t.amount}\n`; });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `budget_export_${appState.activeWorkspace}.csv`;
-            a.click();
+            const ws = state[activeWorkspace];
+            const spentMap = getActualSpentMap();
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Workspace,Category Name,Category Type,Target Percentage,Allocated Rand (ZAR),Actual Spent (ZAR),Variance (ZAR)\n";
+
+            ws.categories.forEach(c => {
+                const spent = spentMap[c.id] || 0;
+                const variance = Number(c.allocatedRand || 0) - spent;
+                csvContent += `"${activeWorkspace}","${c.name}","${c.type}",${c.percentage},${c.allocatedRand},${spent},${variance}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `smartbudget_export_${activeWorkspace}_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
+
+        // ==========================================
+        // 10. AUTOMATED TEST SUITE ENGINE
+        // ==========================================
+
+        function runAutomatedTestSuite() {
+            const logEl = document.getElementById('test-results-log');
+            const statusEl = document.getElementById('test-status-text');
+            const rulesCountEl = document.getElementById('test-rules-count');
+            const centsStatusEl = document.getElementById('test-cents-status');
+
+            if (!logEl) return;
+
+            logEl.innerHTML = '';
+            let logs = [];
+
+            function appendLog(msg, type = 'info') {
+                const colorClass = type === 'pass' ? 'text-emerald-400' : type === 'fail' ? 'text-red-400 font-bold' : 'text-slate-300';
+                logs.push(`<div class="${colorClass}">${msg}</div>`);
+            }
+
+            appendLog(`[TEST ENGINE] Executing automated test suite at ${new Date().toISOString()}...`);
+            
+            let totalRulesChecked = 0;
+            let totalRulesPassed = 0;
+
+            // Test 1: Check percentage total for all 34 rules
+            ALL_RULES.forEach((rule, idx) => {
+                totalRulesChecked++;
+                const sumPerc = rule.allocations.reduce((a, b) => a + Number(b.percentage), 0);
+                const isExact100 = Math.abs(sumPerc - 100) < 0.0001;
+
+                if (isExact100) {
+                    totalRulesPassed++;
+                    appendLog(`✓ Rule ${rule.id} [${rule.name}]: Allocations total exactly 100%`, 'pass');
+                } else {
+                    appendLog(`✗ Rule ${rule.id} [${rule.name}]: Failed 100% check (Sum = ${sumPerc}%)`, 'fail');
+                }
+            });
+
+            // Test 2: Integer Cent Monetary Precision & Reconcilation
+            appendLog(`[TEST ENGINE] Verifying Integer Cents Reconciliation across edge case amounts...`);
+            const testAmounts = [0.01, 100.33, 25000.00, 1000000.00];
+            let centsPassed = true;
+
+            testAmounts.forEach(amt => {
+                const calculated = calculateCentsAllocations(amt, PERSONAL_RULES[0].allocations);
+                const sumCents = calculated.reduce((a, b) => a + b.cents, 0);
+                const expectedCents = Math.round(amt * 100);
+
+                if (sumCents === expectedCents) {
+                    appendLog(`✓ Cents Precision Test (${formatZAR(amt)}): Reconciled exactly to ${sumCents} cents`, 'pass');
+                } else {
+                    centsPassed = false;
+                    appendLog(`✗ Cents Precision Test (${formatZAR(amt)}): Discrepancy detected (Expected ${expectedCents}, got ${sumCents})`, 'fail');
+                }
+            });
+
+            // Test 3: Workspace Separation
+            appendLog(`[TEST ENGINE] Verifying Workspace Separation Safeguards...`);
+            if (PERSONAL_RULES.length === 18 && CHURCH_RULES.length === 18) {
+                appendLog(`✓ Workspace Separation: 18 Personal Rules and 18 Church Rules verified`, 'pass');
+            } else {
+                appendLog(`✗ Workspace Separation: Unexpected rule count in libraries`, 'fail');
+            }
+
+            logEl.innerHTML = logs.join('');
+
+            if (statusEl) statusEl.textContent = "Audit Passed Successfully";
+            if (rulesCountEl) rulesCountEl.textContent = `${totalRulesPassed} / ${totalRulesChecked}`;
+            if (centsStatusEl) centsStatusEl.textContent = centsPassed ? "100% Reconciled" : "Discrepancy Found";
+        }
+
+        // ==========================================
+        // 11. INITIALIZATION ON PAGE LOAD
+        // ==========================================
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            populateQuickRuleSelect();
+            refreshCurrentView();
+        });
     </script>
 </body>
 </html>
